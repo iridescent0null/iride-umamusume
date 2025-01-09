@@ -40,3 +40,62 @@ a {
     color-scheme: dark;
   }
 }
+
+.uma-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.uma-property {
+  padding-left: 5%;
+}
+
+.uma-property .row {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: x-large;
+}
+
+.rank-S {
+  color: gold;
+}
+.rank-A {
+  color: magenta;
+}
+.rank-B {
+  color: red;
+}
+.rank-C {
+  color: green;
+}
+.rank-D {
+  color: aqua;
+}
+.rank-E {
+  color: purple;
+}
+.rank-F {
+  color: blue;
+}
+.rank-G {
+  color: gray;
+}
+
+.uma-row .uma-column {
+  display:inline-block;
+  text-align: center;
+  width: 20px;
+  border-right: solid 1px;
+}
+
+.uma-row .uma-long-column {
+  display:inline-block;
+  text-align: left;
+  width: 400px;
+}
+
+.uma-row .uma-column.icon-wrapper {
+  width: 25px;
+  height: 25px;
+  position: relative;
+}
