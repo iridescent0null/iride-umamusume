@@ -1,3 +1,4 @@
+import { Stranger } from "@/app/api/historic/[id]/route";
 import RankDivision from "@/app/component/rank";
 import { decodeRank, decodeUmaPropertyKey, Rank, UmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
@@ -17,24 +18,29 @@ const ViewHistoric = (context: RequestContext) => {
     .then(params => {
         return fetch(`${getRoot()}/api/historic/${params.id}`)
         .then(res => res.json())
-        .then((historic: HistoricUma | undefined) => {
-            // FIXME in not found situation, these checks don't work (the Image will be reached and complain the wrong path)
-            if ((historic === void 0)) {
-                return  <>NOT FOUND</>;
+        .then((unCheckedHistoric: HistoricUma | Stranger) => {
+            const isStranger = !Object.hasOwn(unCheckedHistoric,"property");
+            if (isStranger) {
+                const stranger = unCheckedHistoric as Stranger;
+                return  <>
+                    <div>NOT FOUND</div>
+                    <div className="uma-icon-wrapper">
+                        <Image className="uma-icon" src={`/uma/icons/${stranger.name_en}_icon.png`} fill={true} alt={"image"}/>
+                    </div>
+                </>;
             }
-            const keys = (historic && historic.property)? Object.keys(historic.property):[];
-            if (keys.length = 0) {
-                return  <>NOT FOUND</>;
-            }
+            const historic = unCheckedHistoric as HistoricUma;
+            const keys = Object.keys(historic.property);
+
             return <>
                 <div>{historic.name}</div>
                 <div className="uma-icon-wrapper">
                     <Image className="uma-icon" src={`/uma/icons/${historic.name_en}_icon.png`} fill={true} alt={"image"}/>
                 </div>
-                <div className="uma-property">{Object.keys(historic.property).map(
+                <div className="uma-property">{keys.map(
                     key => {
                         return (key === "_id" || key === "__v")? <></>:
-                        <div className={`row`} key={key}>{decodeUmaPropertyKey(key as UmaPropertyKey) +": "} 
+                        <div className={`row`} key={key}>{decodeUmaPropertyKey(key as UmaPropertyKey) + ": "} 
                             <RankDivision rank= {decodeRank(historic.property[key as UmaPropertyKey] as number)!}/>                    
                         </div>
                     }
