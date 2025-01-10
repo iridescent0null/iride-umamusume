@@ -28,10 +28,14 @@ test.describe("enjoy basic data browsing", () => {
 
 test.describe("historic list", () => {
     const dartEUma = "メイショウドトウ【Dot-o'-Lantern】";
+
     const dartAUmaInSpecialStyle = "ユキノビジン【茶の子雪ん子】";
     const dartBUmaInNormalStyle = "ユキノビジン";
-    
-    test("shortlisting the umas", async ( {page}, info) => {
+
+    const longATeio = "トウカイテイオー【紫雲の夢見取り】";
+    const longBTeio = "トウカイテイオー";
+
+    test("shortlisting the umas with one condition", async ( {page}, info) => {
         await page.goto("historic/all");
         await expect(page.getByText(dartEUma)).toBeVisible();
 
@@ -53,4 +57,29 @@ test.describe("historic list", () => {
         await expect(page.getByText(dartEUma)).toBeVisible();
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_DirtE.png", fullPage: true});
     });
+
+    test("shortlisting umas with four conditions", async ( {page}, info) => {
+        await page.goto("historic/all");
+        await expect(page.getByText(dartEUma)).toBeVisible();
+
+        // make all invisible with a impossible condition
+        await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
+        await page.locator("#historic-condition-one-key").selectOption({label:"追込"});
+        await expect(page.getByText(dartEUma)).toBeVisible({visible:false});
+
+        await page.locator("#historic-condition-two-rank").selectOption({label:"A"});
+        await page.locator("#historic-condition-two-key").selectOption({label:"芝"});
+        await page.locator("#historic-condition-three-rank").selectOption({label:"A"});
+        await page.locator("#historic-condition-three-key").selectOption({label:"先行"});
+        await page.locator("#historic-condition-four-rank").selectOption({label:"A"});
+        await page.locator("#historic-condition-four-key").selectOption({label:"長距離"});
+
+        // loose the impossible condition
+        await page.locator("#historic-condition-one-rank").selectOption({label:"E"});
+
+        // テイオー's long properness was strengthend at the Shuntaisai
+        await expect(page.getByText(longATeio)).toBeVisible();
+        await expect(page.getByText(longBTeio, {exact: true})).toBeVisible({visible:false});
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_quadrapleCondition.png", fullPage: true});
+    })
 })

@@ -10,11 +10,17 @@ interface Ids {
     ids: Types.ObjectId[];
 }
 
-const ViewAllHistoricUma = (ignored: unknown) => {
+const ViewAllHistoricUma = () => {
 
     const [umas,setUmas] = useState<HistoricUma[]>([]);
     const [conditionOneRank, setConditionOneRank] = useState<number>();
     const [conditionOneKey, setConditionOneKey] = useState<UmaPropertyKey | "">();
+    const [conditionTwoRank, setConditionTwoRank] = useState<number>();
+    const [conditionTwoKey, setConditionTwoKey] = useState<UmaPropertyKey | "">();
+    const [conditionThreeRank, setConditionThreeRank] = useState<number>();
+    const [conditionThreeKey, setConditionThreeKey] = useState<UmaPropertyKey | "">();
+    const [conditionFourRank, setConditionFourRank] = useState<number>();
+    const [conditionFourKey, setConditionFourKey] = useState<UmaPropertyKey | "">();
 
     const dependingOnConditionOne = (uma: HistoricUma) => {
         // if there is no valid conditions, all umas are OK
@@ -22,6 +28,24 @@ const ViewAllHistoricUma = (ignored: unknown) => {
             return true;
         }
         return uma.property![conditionOneKey]! <= conditionOneRank;
+    }
+    const dependingOnConditionTwo = (uma: HistoricUma) => {
+        if (conditionTwoRank === void 0 || Number.isNaN(conditionTwoRank)|| !conditionTwoKey) {
+            return true;
+        }
+        return uma.property![conditionTwoKey]! <= conditionTwoRank;
+    }
+    const dependingOnConditionThree = (uma: HistoricUma) => {
+        if (conditionThreeRank === void 0 || Number.isNaN(conditionThreeRank)|| !conditionThreeKey) {
+            return true;
+        }
+        return uma.property![conditionThreeKey]! <= conditionThreeRank;
+    }
+    const dependingOnConditionFour = (uma: HistoricUma) => {
+        if (conditionFourRank === void 0 || Number.isNaN(conditionFourRank)|| !conditionFourKey) {
+            return true;
+        }
+        return uma.property![conditionFourKey]! <= conditionFourRank;
     }
 
     useEffect(() => {
@@ -55,7 +79,7 @@ const ViewAllHistoricUma = (ignored: unknown) => {
     
         return <div className="dynamic-table">
             <div className="dynamic-search-input">
-                <label htmlFor="historic-condition-one">search condition: </label>
+                <label htmlFor="historic-condition-one-rank">search condition 1: </label>
                 <select id="historic-condition-one-rank" onChange={event => setConditionOneRank(Number.parseInt(event.target.value))}>
                     <option value="">-</option>
                     {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
@@ -64,6 +88,51 @@ const ViewAllHistoricUma = (ignored: unknown) => {
                     )}
                 </select>
                 <select id="historic-condition-one-key" onChange={event => setConditionOneKey(event.target.value as UmaPropertyKey | "")}> 
+                    <option value="">-</option>
+                    {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
+                            {key}
+                        </option>
+                    )}
+                </select><br/>
+                <label htmlFor="historic-condition-two-rank">search condition 2: </label>
+                <select id="historic-condition-two-rank" onChange={event => setConditionTwoRank(Number.parseInt(event.target.value))}>
+                    <option value="">-</option>
+                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
+                            {rank}
+                        </option>
+                    )}
+                </select>
+                <select id="historic-condition-two-key" onChange={event => setConditionTwoKey(event.target.value as UmaPropertyKey | "")}> 
+                    <option value="">-</option>
+                    {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
+                            {key}
+                        </option>
+                    )}
+                </select><br/>
+                <label htmlFor="historic-condition-three-rank">search condition 3: </label>
+                <select id="historic-condition-three-rank" onChange={event => setConditionThreeRank(Number.parseInt(event.target.value))}>
+                    <option value="">-</option>
+                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
+                            {rank}
+                        </option>
+                    )}
+                </select>
+                <select id="historic-condition-three-key" onChange={event => setConditionThreeKey(event.target.value as UmaPropertyKey | "")}> 
+                    <option value="">-</option>
+                    {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
+                            {key}
+                        </option>
+                    )}
+                </select><br/>
+                <label htmlFor="historic-condition-four-rank">search condition 4: </label>
+                <select id="historic-condition-four-rank" onChange={event => setConditionFourRank(Number.parseInt(event.target.value))}>
+                    <option value="">-</option>
+                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
+                            {rank}
+                        </option>
+                    )}
+                </select>
+                <select id="historic-condition-four-key" onChange={event => setConditionFourKey(event.target.value as UmaPropertyKey | "")}> 
                     <option value="">-</option>
                     {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
                             {key}
@@ -86,6 +155,9 @@ const ViewAllHistoricUma = (ignored: unknown) => {
             </div>
             {umas
                 .filter(uma => dependingOnConditionOne(uma))
+                .filter(uma => dependingOnConditionTwo(uma))
+                .filter(uma => dependingOnConditionThree(uma))
+                .filter(uma => dependingOnConditionFour(uma))
                 .map(uma => {
                     return <HistoricRowDividion uma={uma} key={uma._id?.toString()}/>
                 })
