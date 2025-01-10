@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-// 0,1,2,3,4... (G is 7)
+/** One char strings for rank expression: S, A, B...*/
 type Rank = "S" | "A" | "B" | "C" | "D" | "E" | "F" | "G";
 const rankMap = new Map<Rank,number>();
 rankMap.set("S",0);
@@ -22,6 +22,11 @@ function codeRank(rank: Rank) {
 /** e.g. 0 -> S (in Rank, which extends string) */
 function decodeRank(rank: number) {
     return [...rankMap.entries()].find(entry=>entry[1] === rank)?.[0];
+}
+
+/** ["S", "A", "B"...] */
+function getRanks() {
+    return [...rankMap.keys()];
 }
 
 type Field = "turf" | "dirt";
@@ -48,6 +53,11 @@ function codeUmaPropertyKey(plainName: string) {
 /** e.g. dirt => ダート, case sensitive */
 function decodeUmaPropertyKey(key: UmaPropertyKey) {
     return [...umaPropertyKeyMap.entries()].find(entry => entry[1] === key)?.[0]
+}
+
+/** ["芝", "ダート", "短距離" ... "追込"] */
+function getUmaPropertyKeys() {
+    return [...umaPropertyKeyMap.keys()];
 }
     
 const HistoricUmaSchema = new Schema({
@@ -124,5 +134,5 @@ const PropertySchema = new Schema({
 // client mode requires the "?" mark (like models?.historic_umas) for some reason (next's bug?)
 export const HistoricUmaModel = mongoose.models?.historic_umas || mongoose.model("historic_umas", HistoricUmaSchema);
 export const PropertyModel = mongoose.models?.properties || mongoose.model("properties", PropertySchema);
-export { codeRank, decodeRank, codeUmaPropertyKey, decodeUmaPropertyKey };
+export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys };
 export type { Rank, UmaPropertyKey, Field, Distance, Style };

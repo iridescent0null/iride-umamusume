@@ -84,18 +84,37 @@ a {
 .uma-row .uma-column {
   display:inline-block;
   text-align: center;
-  width: 20px;
+  width: 25px;
   border-right: solid 1px;
+  font-size: larger;
 }
 
 .uma-row .uma-long-column {
   display:inline-block;
   text-align: left;
-  width: 400px;
+  width: 500px;
 }
 
 .uma-row .uma-column.icon-wrapper {
-  width: 25px;
-  height: 25px;
+  width: 29px;
+  height: 29px;
+  border: solid 2px transparent;
   position: relative;
+}
+
+.dynamic-search-input {
+  margin: 20px;
+}
+
+.uma-row .uma-column.icon-wrapper.gold-lined {
+  border: solid 2px gold;
+}
+
+.dynamic-table {
+  margin-left: 20px;
+}
+
+footer {
+  margin: 30px;
+  text-align: center;
 }

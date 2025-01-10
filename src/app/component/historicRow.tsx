@@ -22,7 +22,7 @@ const HistoricRowDividion = (props: HistoricProps) => {
             <span className="uma-column"><Rank rank={decodeRank(uma.property.front)!}/></span>
             <span className="uma-column"><Rank rank={decodeRank(uma.property.holdup)!}/></span>
             <span className="uma-column"><Rank rank={decodeRank(uma.property.late)!}/></span>
-            <span className="uma-column icon-wrapper">
+            <span className={"uma-column icon-wrapper" + (uma.plain_id?" gold-lined":"")}>
                 <Image className="uma-icon" src={`/uma/icons/${uma.name_en}_icon.png`} fill={true} alt={""}/>
             </span>
         </div>

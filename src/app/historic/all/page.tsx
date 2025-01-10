@@ -1,5 +1,6 @@
 "use client"
 import HistoricRowDividion from "@/app/component/historicRow";
+import { Rank, UmaPropertyKey, getUmaPropertyKeys, getRanks, codeRank, codeUmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
 import { getRoot } from "@/app/utils/webinfo"
 import { Types } from "mongoose"
@@ -12,9 +13,22 @@ interface Ids {
 const ViewAllHistoricUma = (ignored: unknown) => {
 
     const [umas,setUmas] = useState<HistoricUma[]>([]);
+    const [conditionOneRank, setConditionOneRank] = useState<number>();
+    const [conditionOneKey, setConditionOneKey] = useState<UmaPropertyKey | "">();
+
+    const dependingOnConditionOne = (uma: HistoricUma) => {
+        // if there is no valid conditions, all umas are OK
+        if (conditionOneRank === void 0 || Number.isNaN(conditionOneRank)|| !conditionOneKey) {
+            return true;
+        }
+        return uma.property![conditionOneKey]! <= conditionOneRank;
+    }
 
     useEffect(() => {
         const hydrete = () => {
+            if (umas.length > 0) { // redundant guard
+                return;
+            }
             fetch(`${getRoot()}api/historic/all`)
             .then(res=>res.json())
             .then((json: Ids) => {
@@ -27,7 +41,8 @@ const ViewAllHistoricUma = (ignored: unknown) => {
                 )
             })
             .then((umas: HistoricUma[]) => {
-                setUmas(umas);
+                // alphabetical sort
+                setUmas(umas.sort((uma1,uma2)=> uma1.name.localeCompare(uma2.name)));
             })
             .catch(err => {
                 console.error(err);
@@ -38,7 +53,24 @@ const ViewAllHistoricUma = (ignored: unknown) => {
     []
     );
     
-        return <>
+        return <div className="dynamic-table">
+            <div className="dynamic-search-input">
+                <label htmlFor="historic-condition-one">search condition: </label>
+                <select id="historic-condition-one-rank" onChange={event => setConditionOneRank(Number.parseInt(event.target.value))}>
+                    <option value="">-</option>
+                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
+                            {rank}
+                        </option>
+                    )}
+                </select>
+                <select id="historic-condition-one-key" onChange={event => setConditionOneKey(event.target.value as UmaPropertyKey | "")}> 
+                    <option value="">-</option>
+                    {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
+                            {key}
+                        </option>
+                    )}
+                </select>
+            </div>
             <div className="uma-row" key="header">
                 <span className="uma-column uma-long-column">name</span>
                 <span className="uma-column">芝</span>
@@ -52,10 +84,13 @@ const ViewAllHistoricUma = (ignored: unknown) => {
                 <span className="uma-column">差</span>
                 <span className="uma-column">追</span>
             </div>
-            {umas.map(uma => {
-                return <HistoricRowDividion uma={uma} key={uma._id?.toString()}/>
-            })}
-        </>;
+            {umas
+                .filter(uma => dependingOnConditionOne(uma))
+                .map(uma => {
+                    return <HistoricRowDividion uma={uma} key={uma._id?.toString()}/>
+                })
+            }
+        </div>;
 }
 
 export default ViewAllHistoricUma;
