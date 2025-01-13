@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { decodeRank } from "../db/models";
 import { HistoricUma } from "../db/type";
 import Rank from "./rank";
@@ -10,8 +11,10 @@ interface HistoricProps {
 const HistoricRowDividion = (props: HistoricProps) => {
     const uma = props.uma;
     return (
-        <div className="uma-row" key={uma._id? uma._id.toString() : ""}>
-            <span className="uma-column uma-long-column">{uma.name}</span>
+        <div className="uma-row" key={uma._id.toString()}>
+            <Link href={`/historic/${uma._id.toString()}`} target="_blank">
+                <span className="uma-column uma-long-column">{uma.name}</span>
+            </Link>
             <span className="uma-column"><Rank rank={decodeRank(uma.property.turf)!}/></span>
             <span className="uma-column"><Rank rank={decodeRank(uma.property.dirt)!}/></span>
             <span className="uma-column"><Rank rank={decodeRank(uma.property.sprint)!}/></span>

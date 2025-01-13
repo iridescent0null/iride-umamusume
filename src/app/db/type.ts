@@ -1,7 +1,10 @@
 import { Types } from "mongoose";
 
-interface HistoricUma {
-    _id?: Types.ObjectId, 
+type HistoricUma = HistoricUmaWithoutId & {
+    _id: Types.ObjectId, 
+}
+
+interface HistoricUmaWithoutId {
     name: string,
     name_en:string,
     plain_id?: Types.ObjectId
