@@ -31,10 +31,10 @@ interface SkillProps {
     skill: Skill
 }
 const SkillRowDivision = (props: SkillProps) => {
-    const[historicUmaName,setHistoricUmaName] = useState<string>();
+    const[historicUmaNameEn,setHistoricUmaNameEn] = useState<string>();
     const skill = props.skill;
 
-    useEffect( () => {
+    useEffect(() => {
         const getIconPath = () => {
             if (!skill || !skill.inherent) {
                 return;
@@ -42,7 +42,7 @@ const SkillRowDivision = (props: SkillProps) => {
             fetch(`${getRoot()}api/historic/${skill.inherent.toString()}`)
             .then(res=>res.json())
             .then((historic: HistoricUma) => {
-                setHistoricUmaName(historic.name_en);
+                setHistoricUmaNameEn(historic.name_en);
             })
             .catch(err => {
                 console.error(err);
@@ -57,8 +57,8 @@ const SkillRowDivision = (props: SkillProps) => {
         <div className={"skill-row skill-row-in-"+decodeBackgroundColor(skill.backgroundColor)} key={skill._id.toString()}>
             <span className="skill-column skill-column-long" key={skill._id.toString()+"_name"}>{skill.name}</span>
             <span className={"skill-column icon-wrapper"} key={skill._id.toString()+"_icon"}>
-                {!historicUmaName? <></> :
-                    <Image className="uma-icon" src={`/uma/icons/${historicUmaName}_icon.png`} fill={true} alt={""}/>
+                {!historicUmaNameEn? <></> :
+                    <Image className="uma-icon" src={`/uma/icons/${historicUmaNameEn}_icon.png`} fill={true} alt={""}/>
                 }
             </span>
         </div>
