@@ -173,3 +173,45 @@ button {
   font-size: large;
   padding: 5px;
 }
+
+.skill-row {
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.skill-row .skill-column.icon-wrapper {
+  width: 29px;
+  height: 29px;
+  border: solid 2px transparent;
+  position: relative;
+}
+
+.skill-row .skill-column {
+  display:inline-block;
+  text-align: center;
+  width: 25px;
+  border-right: solid 1px;
+  font-size: larger;
+}
+
+.skill-column.skill-column-long {
+  display:inline-block;
+  text-align: left;
+  width: 300px;
+}
+
+.skill-row-in-normal {
+  background-color: gray;
+}
+
+.skill-row-in-gold {
+  background-color: gold;
+}
+
+.skill-row-in-red {
+  background-color: magenta;
+}
+
+.skill-row-in-iridescent {
+  background-color: magenta;
+}

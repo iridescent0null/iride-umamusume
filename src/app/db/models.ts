@@ -76,7 +76,7 @@ const HistoricUmaSchema = new Schema({
     },
     plain_id: {
         type: Schema.Types.ObjectId,
-        ref: "historic_uma"
+        ref: "historic_umas"
     }
 });
 HistoricUmaSchema.index(
@@ -131,8 +131,191 @@ const PropertySchema = new Schema({
     }
 });
 
+const ParameterSchema = new Schema({
+    speed: {
+        type: Number,
+        required: true
+    },
+    stamina: {
+        type: Number,
+        required: true
+    },
+    power: {
+        type: Number,
+        required: true  
+    },
+    guts: {
+        type: Number,
+        required: true      
+    },
+    wisdom: {
+        type: Number,
+        required: true  
+    }
+});
+
+const HoFUmaSchema = new Schema({
+    created: {
+        type: Date,
+        required: true
+    },
+    historic: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "historic_umas"
+    },
+    parameter: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "parameters"
+    },
+    star: {
+        type: Number,
+        required: true 
+    },
+    point: {
+        type: Number,
+        required: true
+    },
+    awakeningLevel: {
+        type: Number,
+        required: true    
+    },
+    property: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "properties"
+    },
+    redStar: {
+        type: Number,
+        required: true   
+    },
+    redKind: { // TODO code and decode  
+        type: Number,
+        required: true   
+    },
+    greenStar: {
+        type: Number,
+        required: true      
+    },
+    blueStar: {
+        type: Number, 
+        required: true   
+    },
+    blueKind: { // TODO code and decode 
+        type: Number,
+        required: true   
+    },
+    // whiteList: { // TODO foreign key
+    //     type: Schema.Types.ObjectId,
+    //     required: true
+    // },
+    father: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        ref: "historic_umas"
+    },
+    mother: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        ref: "historic_umas"
+    },
+    note: String
+});
+
+const WhiteRowSchema = new Schema({
+    HoFUma: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "hof_umas"
+    },
+    star: {
+        type: Number,
+        required: true   
+    },
+    skill: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "skills"
+    }
+});
+
+const SkillRowSchema = new Schema({
+    HoFUma: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    skill: { // TODO foreign key
+        type: Schema.Types.ObjectId,
+        required: true
+    }
+});
+
+type IconColor = "normal" | "blue" | "green";
+type BackgroundColor = "normal" | "gold" | "red" | "iridescent";
+const iconColorMap = new Map<IconColor,number>();
+iconColorMap.set("normal",0);
+iconColorMap.set("blue",1);
+iconColorMap.set("green",2);
+function codeIconColor(color: IconColor) {
+    return iconColorMap.get(color);
+}
+function decodeIconColor(color: number) {
+    return [...iconColorMap.entries()].find(entry=>entry[1] === color)?.[0];
+}
+
+const backgroundColorMap = new Map<BackgroundColor,number>();
+backgroundColorMap.set("normal",0);
+backgroundColorMap.set("gold",1);
+backgroundColorMap.set("red",2);
+backgroundColorMap.set("iridescent",3);
+function codeBackgroundColor(color: BackgroundColor) {
+    return backgroundColorMap.get(color);
+}
+function decodeBackgroundColor(color: number) {
+    return [...backgroundColorMap.entries()].find(entry=>entry[1] === color)?.[0];
+}
+
+const SkillSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    iconColor: { // TODO code and decode  (0, normal; 1 blue; 2 green)
+        type: Number,
+        required: true
+    },
+    backgroundColor: { // TODO code and decode  (0, normal; 1 gold; 2 pink)
+        type: Number,
+        required: true
+    },
+    isTurf: Boolean,
+    isDirt: Boolean,
+    isSprint: Boolean,
+    isMile: Boolean,
+    isIntermediate: Boolean,
+    isLong: Boolean,
+    isLead: Boolean,
+    isFront: Boolean,
+    isHoldup: Boolean,
+    isLate: Boolean,
+    inherent: {
+        type: Schema.Types.ObjectId,
+        ref: "historic_umas"
+    },
+    base: {
+        type: Schema.Types.ObjectId,
+        ref: "skills"
+    }
+});
+SkillSchema.index(
+    {name: 1},
+    {unique: true}
+);
+
+
 // client mode requires the "?" mark (like models?.historic_umas) for some reason (next's bug?)
 export const HistoricUmaModel = mongoose.models?.historic_umas || mongoose.model("historic_umas", HistoricUmaSchema);
 export const PropertyModel = mongoose.models?.properties || mongoose.model("properties", PropertySchema);
-export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys };
-export type { Rank, UmaPropertyKey, Field, Distance, Style };
+
+export const SkillModel = mongoose.models?.skills || mongoose.model("skills", SkillSchema);
+export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor };
+export type { Rank, UmaPropertyKey, Field, Distance, Style, IconColor, BackgroundColor };

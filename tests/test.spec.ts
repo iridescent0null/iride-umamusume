@@ -217,4 +217,23 @@ test.describe("historic list", () => {
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible({visible:false});
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible();
     });      
-})
+});
+
+test.describe("view skill data", () => {
+    const turboSkill = "エンジン全開！大噴射！";
+    const magenta = "rgb(255, 0, 255)";
+
+    test("find turbo inherent skill in magenta", async ({page}, info) => {
+        await page.goto("skill/all");
+        await page.screenshot({path: "tests/screenshots/skill/"+info.project.name+".png", fullPage: true});
+
+        const turboSkillNameDiv = page.getByText(turboSkill);
+        const turboRow = page.locator(".skill-row").filter({has: turboSkillNameDiv}); 
+
+        await expect(turboRow).toBeVisible();
+        await page.screenshot({path: "tests/screenshots/skill/"+info.project.name+".png", fullPage: true});
+        await expect(turboRow.locator(".icon-wrapper").locator("img")).toBeVisible();
+        await page.screenshot({path: "tests/screenshots/skill/"+info.project.name+".png", fullPage: true});
+        await expect(turboRow).toHaveCSS("background-color", magenta);
+    })
+});

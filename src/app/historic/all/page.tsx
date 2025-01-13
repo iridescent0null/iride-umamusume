@@ -1,6 +1,6 @@
 "use client"
 import HistoricRowDividion from "@/app/component/historicRow";
-import { Rank, UmaPropertyKey, getUmaPropertyKeys, getRanks, codeRank, codeUmaPropertyKey } from "@/app/db/models";
+import { UmaPropertyKey, getUmaPropertyKeys, getRanks, codeRank, codeUmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
 import { getRoot } from "@/app/utils/webinfo"
 import { Types } from "mongoose"
@@ -283,3 +283,4 @@ const ViewAllHistoricUma = () => {
 }
 
 export default ViewAllHistoricUma;
+export type { Ids };

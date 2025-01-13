@@ -31,7 +31,8 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-
+  
+  timeout: 10_000, // chromium tests sometimes fail to finish in the default timeout, namely 5 seconds, in my machine
   /* Configure projects for major browsers */
   projects: [
     {
