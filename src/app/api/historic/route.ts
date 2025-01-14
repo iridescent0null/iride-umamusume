@@ -7,18 +7,40 @@ interface HistoricCreationRequest {
     name: string,
     name_en: string,
     plain_id?: Types.ObjectId,
-    property: { // these values must be Rank (= string, like "S"), not number like in the DB
-        turf: Rank,
-        dirt: Rank,
-        sprint: Rank,
-        mile: Rank,
-        intermediate: Rank,
-        long: Rank,
-        lead: Rank,
-        front: Rank,
-        holdup: Rank,
-        late: Rank        
-    }
+    property: PropertyCreation
+}
+
+interface PropertyCreation {
+    turf: Rank,
+    dirt: Rank,
+    sprint: Rank,
+    mile: Rank,
+    intermediate: Rank,
+    long: Rank,
+    lead: Rank,
+    front: Rank,
+    holdup: Rank,
+    late: Rank 
+}
+
+/**
+ * change readble rank values to ones in number to insert the collection in DB
+ * @param property having values like "S"
+ * @returns property having values like 0
+ */
+function codeProperty(property: PropertyCreation) {
+    return {
+        turf: codeRank(property.turf),
+        dirt: codeRank(property.dirt),
+        sprint: codeRank(property.sprint),
+        mile: codeRank(property.mile),
+        intermediate: codeRank(property.intermediate),
+        long: codeRank(property.long),
+        lead: codeRank(property.lead),
+        front: codeRank(property.front),
+        holdup: codeRank(property.holdup),
+        late: codeRank(property.late)
+    };
 }
 
 interface HistoricCreationResponse {
@@ -38,21 +60,7 @@ export async function POST(request: NextRequest){
     try {
         const uma: HistoricCreationRequest = await request.json();
         connectDB();
-        const propertyResult = await PropertyModel.create(
-            {
-                turf: codeRank(uma.property.turf),
-                dirt: codeRank(uma.property.dirt),
-                sprint: codeRank(uma.property.sprint),
-                mile: codeRank(uma.property.mile),
-                intermediate: codeRank(uma.property.intermediate),
-                long: codeRank(uma.property.long),
-                lead: codeRank(uma.property.lead),
-                front: codeRank(uma.property.front),
-                holdup: codeRank(uma.property.holdup),
-                late: codeRank(uma.property.late)
-            }
-        )
-
+        const propertyResult = await PropertyModel.create(codeProperty(uma.property));
         console.log(`property added into th DB: ${propertyResult}`);
 
         const historicResult: HistoricUma = await HistoricUmaModel.create(
@@ -70,3 +78,6 @@ export async function POST(request: NextRequest){
         return NextResponse.json({message: "failed"} as HistoricCreationResponse, {status: 500});
     }
 }
+
+export type { PropertyCreation };
+export { codeProperty };

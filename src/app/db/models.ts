@@ -159,12 +159,12 @@ const HoFUmaSchema = new Schema({
         type: Date,
         required: true
     },
-    historic: { // TODO foreign key
+    historic: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "historic_umas"
     },
-    parameter: { // TODO foreign key
+    parameter: { // TODO unique constraint without index cannot be implemented?
         type: Schema.Types.ObjectId,
         required: true,
         ref: "parameters"
@@ -181,7 +181,7 @@ const HoFUmaSchema = new Schema({
         type: Number,
         required: true    
     },
-    property: { // TODO foreign key
+    property: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "properties"
@@ -190,8 +190,8 @@ const HoFUmaSchema = new Schema({
         type: Number,
         required: true   
     },
-    redKind: { // TODO code and decode  
-        type: Number,
+    redKind: {
+        type: String,
         required: true   
     },
     greenStar: {
@@ -202,27 +202,23 @@ const HoFUmaSchema = new Schema({
         type: Number, 
         required: true   
     },
-    blueKind: { // TODO code and decode 
-        type: Number,
+    blueKind: {
+        type: String,
         required: true   
     },
-    // whiteList: { // TODO foreign key
-    //     type: Schema.Types.ObjectId,
-    //     required: true
-    // },
-    father: { // TODO foreign key
+    father: { // not tested  yet
         type: Schema.Types.ObjectId,
         ref: "historic_umas"
     },
-    mother: { // TODO foreign key
+    mother: { // not tested  yet
         type: Schema.Types.ObjectId,
         ref: "historic_umas"
     },
     note: String
 });
 
-const WhiteRowSchema = new Schema({
-    HoFUma: { // TODO foreign key
+const WhiteFactorSchema = new Schema({
+    HoFUma: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "hof_umas"
@@ -231,14 +227,47 @@ const WhiteRowSchema = new Schema({
         type: Number,
         required: true   
     },
-    skill: { // TODO foreign key
+    skill: {
         type: Schema.Types.ObjectId,
-        required: true,
         ref: "skills"
+    },
+    scenario: {
+        type: Schema.Types.ObjectId,
+        ref: "scenario_factor_names"
+    },
+    race: {
+        type: Schema.Types.ObjectId,
+        ref: "races"
+    },
+});
+WhiteFactorSchema.index(
+    {HoFUma: 1, skill: 1, scenario: 1, race: 1},
+    {unique: true}
+);
+
+const ScenarioFactorNameSchema = new Schema({
+    name: {
+        type: String,
+        required: true
     }
 });
+ScenarioFactorNameSchema.index(
+    {name: 1},
+    {unique: true}
+);
 
-const SkillRowSchema = new Schema({
+const RaceSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    }
+});
+RaceSchema.index(
+    {name: 1},
+    {unique: true}
+);
+
+const SkillRowSchema = new Schema({ //TODO not tested yet
     HoFUma: { // TODO foreign key
         type: Schema.Types.ObjectId,
         required: true
@@ -248,6 +277,7 @@ const SkillRowSchema = new Schema({
         required: true
     }
 });
+// TODO index with unique constraint
 
 type IconColor = "normal" | "blue" | "green";
 type BackgroundColor = "normal" | "gold" | "red" | "iridescent";
@@ -311,11 +341,15 @@ SkillSchema.index(
     {unique: true}
 );
 
-
 // client mode requires the "?" mark (like models?.historic_umas) for some reason (next's bug?)
 export const HistoricUmaModel = mongoose.models?.historic_umas || mongoose.model("historic_umas", HistoricUmaSchema);
 export const PropertyModel = mongoose.models?.properties || mongoose.model("properties", PropertySchema);
-
 export const SkillModel = mongoose.models?.skills || mongoose.model("skills", SkillSchema);
+export const ParameterModel = mongoose.models?.parameters || mongoose.model("parameters", ParameterSchema);
+export const HoFUmaModel = mongoose.models?.hof_umas || mongoose.model("hof_umas", HoFUmaSchema);
+export const WhiteFactorModel = mongoose.models?.white_factors || mongoose.model("white_factors", WhiteFactorSchema);
+export const RaceModel = mongoose.models?.races || mongoose.model("races", RaceSchema);
+export const ScenarioFactorNameModel = mongoose.models?.scenario_factor_names || mongoose.model("scenario_factor_names", ScenarioFactorNameSchema);
+
 export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor };
 export type { Rank, UmaPropertyKey, Field, Distance, Style, IconColor, BackgroundColor };
