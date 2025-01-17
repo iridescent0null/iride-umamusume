@@ -1,10 +1,8 @@
 import connectDB from "@/app/db/connect";
 import { RaceModel } from "@/app/db/models";
+import { RaceWithoutId } from "@/app/db/type";
 import { NextRequest, NextResponse } from "next/server";
 
-interface RaceWithoutId {
-    name: string
-}
 
 export async function POST(request: NextRequest) {
     try {

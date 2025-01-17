@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
         console.log(`property created: ${property._id}`);
         orphanProperty = property._id;
 
+        // FIXME reject wrong key, like "dart"
         const hoFUmaToCreate: HoFUmaWithoutId = {
             ...uma.hof,
             parameter: parameter._id,

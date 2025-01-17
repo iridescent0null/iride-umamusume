@@ -1,7 +1,12 @@
 import connectDB from "@/app/db/connect";
 import { ScenarioFactorNameModel } from "@/app/db/models";
 import { NextResponse } from "next/server";
-import { AllIdMessage } from "../../historic/all/route";
+import { Factor } from "@/app/db/type";
+
+interface AllScenarioFactorResponse {
+    message: string,
+    factors?:  Factor[]
+}
 
 export async function GET() {
     try {
@@ -10,9 +15,11 @@ export async function GET() {
         return NextResponse.json({
             message: "success", 
             factors: allIds.map(factor => {return {name: factor.name, _id:factor._id}})
-        });
+        } as AllScenarioFactorResponse);
     } catch (err) {
         console.error(err);
-        return NextResponse.json({message: "failed"} as AllIdMessage, {status: 500});
+        return NextResponse.json({message: "failed"} as AllScenarioFactorResponse, {status: 500});
     }
 }
+
+export type { AllScenarioFactorResponse };

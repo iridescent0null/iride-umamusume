@@ -1,15 +1,22 @@
 import connectDB from "@/app/db/connect";
 import { SkillModel } from "@/app/db/models";
+import { Skill } from "@/app/db/type";
 import { NextResponse } from "next/server";
-import { AllIdMessage } from "../../historic/all/route";
+
+interface AllSkillsResponse {
+    message: string,
+    skills?: Skill[]
+}
 
 export async function GET() {
     try {
         connectDB();
-        const allIds = await SkillModel.find().select("_id");
-        return NextResponse.json({message: "success", ids: allIds.map(obj=>obj._id)} as AllIdMessage);
+        const allIds = await SkillModel.find();
+        return NextResponse.json({message: "success", skills: allIds.map(obj=>{return {_id: obj._id, name: obj.name}})} as AllSkillsResponse);
     } catch (err) {
         console.error(err);
-        return NextResponse.json({message: "failed"} as AllIdMessage, {status: 500});
+        return NextResponse.json({message: "failed"} as AllSkillsResponse, {status: 500});
     }
 }
+
+export type { AllSkillsResponse }

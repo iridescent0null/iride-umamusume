@@ -153,6 +153,20 @@ const ParameterSchema = new Schema({
         required: true  
     }
 });
+type UmaParameterKey = "speed" | "stamina" | "power" | "guts" | "wisdom";
+const parameterKeykMap = new Map<string,UmaParameterKey>(); 
+parameterKeykMap.set("スピード", "speed");
+parameterKeykMap.set("スタミナ", "stamina");
+parameterKeykMap.set("パワー", "power");
+parameterKeykMap.set("根性", "guts");
+parameterKeykMap.set("賢さ", "wisdom");
+function codeUmaParameterKey(plainName: string) {
+    return parameterKeykMap.get(plainName);
+}
+function decodeUmaParameterKey(key: UmaParameterKey) {
+    return [...parameterKeykMap.entries()].find(entry => entry[1] === key)?.[0]
+}
+
 
 const HoFUmaSchema = new Schema({
     created: {
@@ -351,5 +365,5 @@ export const WhiteFactorModel = mongoose.models?.white_factors || mongoose.model
 export const RaceModel = mongoose.models?.races || mongoose.model("races", RaceSchema);
 export const ScenarioFactorNameModel = mongoose.models?.scenario_factor_names || mongoose.model("scenario_factor_names", ScenarioFactorNameSchema);
 
-export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor };
-export type { Rank, UmaPropertyKey, Field, Distance, Style, IconColor, BackgroundColor };
+export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor, decodeUmaParameterKey};
+export type { Rank, UmaPropertyKey, Field, Distance, Style, IconColor, BackgroundColor, UmaParameterKey };

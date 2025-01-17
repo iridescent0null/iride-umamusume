@@ -4,7 +4,6 @@ import { UmaPropertyKey } from "./models";
 type HistoricUma = HistoricUmaWithoutId & {
     _id: Types.ObjectId, 
 };
-
 interface HistoricUmaWithoutId {
     name: string,
     name_en:string,
@@ -15,7 +14,6 @@ interface HistoricUmaWithoutId {
 type Property = PropertyWithoutId & {
     _id: Types.ObjectId
 };
-
 interface PropertyWithoutId {
     turf: number,
     dirt: number,
@@ -32,7 +30,6 @@ interface PropertyWithoutId {
 type Parameter = ParameterWithoutId & {
     _id: Types.ObjectId 
 };
-
 interface ParameterWithoutId {
     speed: number,
     stamina: number,
@@ -75,7 +72,32 @@ interface HoFUmaWithoutIdProperty {
     blueKind: UmaPropertyKey,
     father?: Types.ObjectId,
     mother?: Types.ObjectId,
-    note?: String
+    note?: string
 }
 
-export type { HoFUma, HistoricUma, PropertyWithoutId, HoFUmaWithoutIdProperty, Property, ParameterWithoutId, Parameter, WhiteFactorWithoutUma, WhiteFactor, HoFUmaWithoutId };
+type Race = RaceWithoutId & {
+    _id: Types.ObjectId
+};
+interface RaceWithoutId {
+    // currently just for the factors, then the other information omitted...
+    name: string
+}
+
+type Skill = SkillWithoutId & {
+    _id: Types.ObjectId
+};
+interface SkillWithoutId {
+    // currently just for the factors, then the other information omitted...
+    name: string
+}
+
+/** scenario factor like メカ娘シナリオ・GUTS, with its id in the DB */
+type Factor = FactorWithoutId & {
+    _id: Types.ObjectId
+};
+/** scenario factor like メカ娘シナリオ・GUTS */
+interface FactorWithoutId {
+    name: string
+}
+
+export type { HoFUma, HistoricUma, PropertyWithoutId, HoFUmaWithoutIdProperty, Property, ParameterWithoutId, Parameter, WhiteFactorWithoutUma, WhiteFactor, HoFUmaWithoutId, Race, RaceWithoutId, Skill, Factor, FactorWithoutId };

@@ -55,3 +55,4 @@ const ViewHistoric = (context: RequestContext) => {
 };
 
 export default ViewHistoric;
+export type { RequestContext };

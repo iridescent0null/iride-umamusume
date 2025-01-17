@@ -237,3 +237,44 @@ test.describe("view skill data", () => {
         await expect(turboRow).toHaveCSS("background-color", magenta);
     })
 });
+
+test.describe("browse umas in the Hall of Fame", () => {
+    const turboId = "6785f6ae35051cd1a38e565f"; // expected to have specific factors as written below
+    const notFoundId = "777777777777777777777777"; // if there is, change it!
+
+    test("see the turbo she has been the representive", async ({page}, info) =>{
+        await page.goto(`hof/${turboId}`);
+        await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+".png", fullPage: true});
+
+        await expect(page.getByText("ツインターボ")).toBeVisible()
+
+        const staminaFactor = page.getByText("スタミナ");
+        await expect(staminaFactor).toBeVisible();
+        await expect(staminaFactor.getByText("★★★")).toBeVisible();
+
+        const intermediatFactor = page.getByText("中距離");
+        await expect(intermediatFactor).toBeVisible();
+        await expect(intermediatFactor.getByText("★★★")).toBeVisible();
+
+        const hanshinJFFactor = page.getByText("阪神ジュベナイルフィリーズ");
+        await expect(hanshinJFFactor).toBeVisible();
+        await expect(hanshinJFFactor.getByText("★★☆")).toBeVisible();
+
+        const mechaGutsFactor = page.getByText("メカウマ娘シナリオ・GUTS");
+        await expect(mechaGutsFactor).toBeVisible();
+        await expect(mechaGutsFactor.getByText("★★★")).toBeVisible();
+
+        const suzukaFactor = page.getByText("先頭プライド");
+        await expect(suzukaFactor).toBeVisible();
+        await expect(suzukaFactor.getByText("★★☆")).toBeVisible();
+        await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+".png", fullPage: true});
+    });
+
+    test("see NOT FOUND page with a wrong id", async ({page}, info) => {
+        await page.goto(`hof/${notFoundId}`);
+
+        await expect(page.getByText("NOT FOUND")).toBeVisible();
+        await expect(page.getByText("Power")).toBeVisible({visible:false});
+        await expect(page.getByText("固有")).toBeVisible({visible:false});
+    });
+});

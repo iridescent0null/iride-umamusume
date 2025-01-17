@@ -56,28 +56,31 @@ a {
   font-size: x-large;
 }
 
-.rank-S {
+.parameter-column-U {
+  color: mediumpurple;
+}
+.rank-S, .parameter-column-SS, .parameter-column-S {
   color: gold;
 }
-.rank-A {
+.rank-A, .parameter-column-A {
   color: magenta;
 }
-.rank-B {
+.rank-B, .parameter-column-B {
   color: red;
 }
-.rank-C {
+.rank-C, .parameter-column-C {
   color: green;
 }
-.rank-D {
+.rank-D, .parameter-column-D {
   color: aqua;
 }
-.rank-E {
+.rank-E, .parameter-column-E {
   color: purple;
 }
-.rank-F {
+.rank-F, .parameter-column-F {
   color: blue;
 }
-.rank-G {
+.rank-G, .parameter-column-G {
   color: gray;
 }
 
@@ -214,4 +217,93 @@ button {
 
 .skill-row-in-iridescent {
   background-color: magenta;
+}
+
+.hof {
+  display: inline-grid;
+  margin: 10px;
+}
+
+.hof .factor {
+  width: 150px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.hof .red-factor {
+  background-color: salmon;
+}
+
+.hof .blue-factor {
+  background-color: skyblue;
+}
+
+.hof .green-factor {
+  background-color: greenyellow;
+}
+
+.hof .white-factor {
+  background-color: gray;
+  width: 50%
+}
+
+.hof .star {
+  color: gold;
+  text-shadow: 1px 1px 5px black;
+}
+
+.hof .factor-table {
+  margin: 20px;
+  display: flex;
+  width: 750px;
+}
+
+.hof .factor-table .left-column{
+  width: 20%;
+}
+
+.hof .factor-table .right-column{
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hof .title {
+  font-size: large;
+}
+
+.hof .date {
+  font-size: large;
+}
+
+.hof .point {
+  font-size: large;
+}
+
+.hof .hof-head {
+  display: flex;
+}
+
+.hof .hof-content-wrapper {
+  margin-left: 10px;
+}
+
+.parameter-table {
+  margin: 20px;
+  text-align: center;
+}
+
+.parameter-table .row {
+  display: flex;
+} 
+
+.parameter-table .column {
+  border: solid gray 2px;
+  width: 75px;
+} 
+
+.parameter-value {
+  font-weight: bolder;
+  text-shadow: 0px 0 5px gray;
+  background-color: black;
 }

@@ -1,14 +1,11 @@
 import connectDB from "@/app/db/connect";
-import { RaceModel, ScenarioFactorNameModel } from "@/app/db/models";
+import { ScenarioFactorNameModel } from "@/app/db/models";
+import { FactorWithoutId } from "@/app/db/type";
 import { NextRequest, NextResponse } from "next/server";
-
-interface SenarioFactorNameWithoutId {
-    name: string
-}
 
 export async function POST(request: NextRequest) {
     try {
-        const factor: SenarioFactorNameWithoutId = await request.json();
+        const factor: FactorWithoutId = await request.json();
         connectDB();
         const factorCreated = await ScenarioFactorNameModel.create(factor);
         if (!factorCreated) {

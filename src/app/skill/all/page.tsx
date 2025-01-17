@@ -13,7 +13,7 @@ const ViewAllSkills = () => {
             if (skills.length > 0) {
                 return;
             }
-            fetch(`${getRoot()}api/skill/all`)
+            fetch(`${getRoot()}api/skill/ids`)
             .then(res=>res.json())
             .then((json: Ids) => {
                 const ids: Types.ObjectId[] = json.ids;

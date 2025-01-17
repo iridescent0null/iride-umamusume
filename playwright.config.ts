@@ -32,7 +32,8 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   
-  timeout: 10_000, // chromium tests sometimes fail to finish in the default timeout, namely 5 seconds, in my machine
+  expect: {timeout: 15_000},
+  timeout: 20_000, // chromium tests sometimes fail to finish in the default timeout, namely 5 seconds, in my machine
   /* Configure projects for major browsers */
   projects: [
     {
