@@ -230,15 +230,15 @@ button {
   border-radius: 5px;
 }
 
-.hof .red-factor {
+.hof .red-factor, .hof-row .red-factor {
   background-color: salmon;
 }
 
-.hof .blue-factor {
+.hof .blue-factor, .hof-row .blue-factor  {
   background-color: skyblue;
 }
 
-.hof .green-factor {
+.hof .green-factor, .hof-row .green-factor  {
   background-color: greenyellow;
 }
 
@@ -247,7 +247,7 @@ button {
   width: 50%
 }
 
-.hof .star {
+.hof .star, .hof-row .star {
   color: gold;
   text-shadow: 1px 1px 5px black;
 }
@@ -306,4 +306,50 @@ button {
   font-weight: bolder;
   text-shadow: 0px 0 5px gray;
   background-color: black;
+}
+
+.hof-row {
+  display:flex;
+}
+
+.hof-row a .uma-icon-wrapper {
+  display:inline-block;
+  width: 49px;
+  height: 49px;
+  border: solid 2px transparent;
+  position: relative;
+}
+
+.hof-row .hof-column {
+  display:inline-block;
+  text-align: center;
+  width: 25px;
+  border-right: solid 1px;
+  font-size: larger;
+}
+
+.hof-row .factor {
+  font-size: smaller;
+  width: 120px;
+  height: 40px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.parent {
+  margin: 10px;
+  flex-wrap: wrap;
+}
+.parent .white-factor {
+  font-size: smaller;
+  width: 120px;
+  height: 80px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.parent .white-factor-table {
+  width: 600px;
+  display: flex;
+  flex-wrap: wrap;
 }

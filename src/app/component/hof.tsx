@@ -1,9 +1,12 @@
-import { MaterializedHoFUma } from "../api/hofuma/[id]/route";
+import { HoFResponse, MaterializedHoFUma } from "../api/hofuma/[id]/route";
 import { decodeUmaParameterKey, decodeUmaPropertyKey, UmaParameterKey } from "../db/models";
 import { Factor, HistoricUma, HoFUma, Race, Skill, WhiteFactorWithoutUma } from "../db/type";
 import { getRoot } from "../utils/webinfo";
 import Image from "next/image";
 import ParameterTableDiv from "./parameter";
+import { Types } from "mongoose";
+import { HoFUmaSummary } from "../api/hofuma/all/route";
+import HoFUmaInlineRowDiv from "./hofRow";
 
 interface HoFUmaProps {
     uma: MaterializedHoFUma,
@@ -26,8 +29,23 @@ const renderStar = (stars: Star) => {
     : <></> // should be unreachable
 }
 
-const prettyDate = (date: string) => {
+/** convert the date to pretty expression assuming the viewer and the caster share these timezone like Tokyo */
+function prettyDate (date: string) {
     return new Date(date).toLocaleDateString("ja-JP");
+};
+
+const historicIcon = (historic: Types.ObjectId) => { //TODO should be a component?
+    return fetch(`${getRoot()}/api/historic/${historic}`)
+    .then(res => res.json())
+    .then((historic: HistoricUma) => {
+        return <span className="uma-icon-wrapper">
+            <Image className="uma-icon" src={`/uma/icons/${historic.name_en}_icon.png`} fill={true} alt={""}/>
+        </span>;
+    })
+    .catch(err => {
+        console.error(err);
+        return <></>;
+    })
 };
 
 const HoFRowDivision = (props: HoFUmaProps) => {
@@ -49,27 +67,43 @@ const HoFRowDivision = (props: HoFUmaProps) => {
             return "";
         }
         return name?.substring(0,14) || "";
-        // return ((factor.race && races)?
-        //                 races.find(race => race._id === factor.race)?.name
-        //                 :(factor.scenario && scenarios)?
-        //                                 scenarios.find(scenario => scenario._id === factor.scenario)?.name
-        //                                 :(factor.skill && skills)?
-        //                                         skills.find(skill => skill._id === factor.skill)?.name
-        //                                         : ""
-        // )?.substring(0,14) || "";
     }
 
+    let _historic: HistoricUma;
+    let _father: MaterializedHoFUma;
+    let _fatherWhiteFactors: WhiteFactorWithoutUma[];
+    let _mother: MaterializedHoFUma;
+    let _motherWhiteFactors: WhiteFactorWithoutUma[];
     return fetch(`${getRoot()}/api/historic/${uma.historic}`)
     .then(res => res.json())
-    .then((historic: HistoricUma) => {
+    .then((historic: HistoricUma) => _historic = historic)
+    .then(() => {
+        return !uma.father? null 
+        :fetch(`${getRoot()}/api/hofuma/${uma.father}`)
+        .then(res => res.json())
+        .then((father: HoFResponse) => {
+            _father = father.uma; // FIXME type confusion between number and star
+            _fatherWhiteFactors = father.whiteFactors;
+        })
+    })
+    .then(() => {
+        return !uma.mother? null 
+        :fetch(`${getRoot()}/api/hofuma/${uma.mother}`)
+        .then(res => res.json())
+        .then((mother: HoFResponse) => {
+            _mother = mother.uma; // FIXME type confusion between number and star
+            _motherWhiteFactors = mother.whiteFactors;
+        })
+    })
+    .then(() => {
         return (
             <div className="hof" key={uma._id.toString()}>
                 <div className="hof-head">
                     <span className="uma-icon-wrapper">
-                        <Image className="uma-icon" src={`/uma/icons/${historic.name_en}_icon.png`} fill={true} alt={""}/>
+                        <Image className="uma-icon" src={`/uma/icons/${_historic.name_en}_icon.png`} fill={true} alt={""}/>
                     </span>
                     <div className="hof-content-wrapper">
-                    <div className="title">{historic.name}</div>
+                    <div className="title">{_historic.name}</div>
                     <div className="date">{ prettyDate(uma.created)}</div>
                     <div className="point"><strong>{uma.point}</strong></div>
                     </div>
@@ -91,9 +125,40 @@ const HoFRowDivision = (props: HoFUmaProps) => {
                 </div>
                 <div>Note: </div>
                 <div>{uma.note || "(no note)"}</div>
+                {!_father?<></>:
+                    <div className="parent" key="father" id="father-information">
+                        <div>-------------------------------------------------------------------------------------</div>
+                            <HoFUmaInlineRowDiv uma={_father as unknown as HoFUmaSummary}/>
+                            <div className="white-factor-table">
+                                {!_fatherWhiteFactors? <></>:
+                                    _fatherWhiteFactors.map(factor => <div className="white-factor factor">
+                                                {extractName(factor)}:  {renderStar(factor.star as Star)}
+                                        </div>)
+                                }
+                        </div>
+                    </div>
+                }
+                {!_mother?<></>:
+                    <div className="parent" key="mother" id="mother-information">
+                        <div>-------------------------------------------------------------------------------------</div>
+                            <HoFUmaInlineRowDiv uma={_mother as unknown as HoFUmaSummary}/>
+                            <div className="white-factor-table">
+                                {!_motherWhiteFactors? <></>:
+                                    _motherWhiteFactors.map(factor => <div className="white-factor factor">
+                                                {extractName(factor)}:  {renderStar(factor.star as Star)}
+                                        </div>)
+                                }
+                        </div>
+                    </div>
+                }
             </div>
-        )}
-    );
+        );}
+    )
+    .catch(err => {
+        console.error(err);
+    });
 }
 
 export default HoFRowDivision;
+export type { Star };
+export { historicIcon, prettyDate, renderStar }

@@ -240,34 +240,95 @@ test.describe("view skill data", () => {
 
 test.describe("browse umas in the Hall of Fame", () => {
     const turboId = "6785f6ae35051cd1a38e565f"; // expected to have specific factors as written below
+    const mayaId = "678a168035051cd1a38f3c00"; // expected to have specific factors as written below
     const notFoundId = "777777777777777777777777"; // if there is, change it!
 
-    test("see the turbo she has been the representive", async ({page}, info) =>{
-        await page.goto(`hof/${turboId}`);
-        await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+".png", fullPage: true});
+    test("see the maya, the former representve", async ({page}, info) => {
+        await page.goto(`hof/${mayaId}`);
 
-        await expect(page.getByText("ツインターボ")).toBeVisible()
+        await expect(page.getByText("マヤノトップガン")).toBeVisible();
 
-        const staminaFactor = page.getByText("スタミナ");
+        const mainWhiteFactors = page.locator(".right-column");
+        const mainTheOtherFactors = page.locator(".left-column");
+
+        const staminaFactor = mainTheOtherFactors.getByText("スタミナ");
         await expect(staminaFactor).toBeVisible();
         await expect(staminaFactor.getByText("★★★")).toBeVisible();
 
-        const intermediatFactor = page.getByText("中距離");
+        const intermediatFactor = mainTheOtherFactors.getByText("中距離");
         await expect(intermediatFactor).toBeVisible();
         await expect(intermediatFactor.getByText("★★★")).toBeVisible();
 
-        const hanshinJFFactor = page.getByText("阪神ジュベナイルフィリーズ");
+        const hanshinJFFactor = mainWhiteFactors.getByText("日本ダービー");
         await expect(hanshinJFFactor).toBeVisible();
         await expect(hanshinJFFactor.getByText("★★☆")).toBeVisible();
 
-        const mechaGutsFactor = page.getByText("メカウマ娘シナリオ・GUTS");
+        const mechaGutsFactor = mainWhiteFactors.getByText("メカウマ娘シナリオ・GUTS");
+        await expect(mechaGutsFactor).toBeVisible({visible: false});
+
+        const suzukaFactor = mainWhiteFactors.getByText("急ぎ足");
+        await expect(suzukaFactor).toBeVisible();
+        await expect(suzukaFactor.getByText("★★★")).toBeVisible();
+        await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+"_maya.png", fullPage: true});
+    });
+
+    test("see the turbo with parents", async ({page}, info) =>{
+        await page.goto(`hof/${turboId}`);
+        await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+".png", fullPage: true});
+
+        await expect(page.getByText("ツインターボ")).toBeVisible();
+
+        const mainWhiteFactors = page.locator(".right-column");
+        const mainTheOtherFactors = page.locator(".left-column");
+
+        const staminaFactor = mainTheOtherFactors.getByText("スタミナ");
+        await expect(staminaFactor).toBeVisible();
+        await expect(staminaFactor.getByText("★★★")).toBeVisible();
+
+        const intermediatFactor = mainTheOtherFactors.getByText("中距離");
+        await expect(intermediatFactor).toBeVisible();
+        await expect(intermediatFactor.getByText("★★★")).toBeVisible();
+
+        const hanshinJFFactor = mainWhiteFactors.getByText("阪神ジュベナイルフィリーズ");
+        await expect(hanshinJFFactor).toBeVisible();
+        await expect(hanshinJFFactor.getByText("★★☆")).toBeVisible();
+
+        const mechaGutsFactor = mainWhiteFactors.getByText("メカウマ娘シナリオ・GUTS");
         await expect(mechaGutsFactor).toBeVisible();
         await expect(mechaGutsFactor.getByText("★★★")).toBeVisible();
 
-        const suzukaFactor = page.getByText("先頭プライド");
+        const suzukaFactor = mainWhiteFactors.getByText("先頭プライド");
         await expect(suzukaFactor).toBeVisible();
         await expect(suzukaFactor.getByText("★★☆")).toBeVisible();
         await page.screenshot({path: "tests/screenshots/hof/"+info.project.name+".png", fullPage: true});
+
+        const yukino = page.locator("#father-information");
+
+        const yukinoSpeedFactor = yukino.getByText("スピード");
+        await expect(yukinoSpeedFactor).toBeVisible();
+        await expect(yukinoSpeedFactor.getByText("★★★")).toBeVisible();
+
+        const yukinoLongFactor = yukino.getByText("長距離");
+        await expect(yukinoLongFactor).toBeVisible();
+        await expect(yukinoLongFactor.getByText("★☆☆")).toBeVisible();
+
+        const yukinoMoriokaFactor = yukino.getByText("盛岡レース場○");
+        await expect(yukinoMoriokaFactor).toBeVisible();
+        await expect(yukinoMoriokaFactor.getByText("★☆☆")).toBeVisible();
+
+        const taiki = page.locator("#mother-information");
+
+        const taikiSpeedFactor = taiki.getByText("スピード");
+        await expect(taikiSpeedFactor).toBeVisible();
+        await expect(taikiSpeedFactor.getByText("★★★")).toBeVisible();
+
+        const taikiDirt = taiki.getByText("ダート");
+        await expect(taikiDirt).toBeVisible();
+        await expect(taikiDirt.getByText("★★★")).toBeVisible();
+
+        const taikiKazekiri = taiki.getByText("風切り");
+        await expect(taikiKazekiri).toBeVisible();
+        await expect(taikiKazekiri.getByText("★★☆")).toBeVisible();
     });
 
     test("see NOT FOUND page with a wrong id", async ({page}, info) => {
