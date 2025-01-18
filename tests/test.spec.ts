@@ -339,3 +339,35 @@ test.describe("browse umas in the Hall of Fame", () => {
         await expect(page.getByText("固有")).toBeVisible({visible:false});
     });
 });
+
+test.describe("browse the hof uma list", () => {
+    test("count turbo effective stars", async ({page}, info) => {
+        const turboCreationDate = "2024/12/23";
+        await page.goto("hof/all");
+
+        const turboDate = page.getByText(turboCreationDate);
+        const turboRow = page.locator(".hof-row").filter({has: turboDate}); 
+
+        const staminaFactor = turboRow.getByText("スタミナ");
+        await expect(staminaFactor.getByText("★★★")).toBeVisible();
+
+        const speedFactors = await turboRow.getByText("スピード").all();
+        await expect(speedFactors[0].getByText("★★★")).toBeVisible();
+        await expect(speedFactors[1].getByText("★★★")).toBeVisible();
+
+        const intermediateFactor = turboRow.getByText("中距離");
+        await expect(intermediateFactor.getByText("★★★")).toBeVisible();
+
+        const longFactor = turboRow.getByText("長距離");
+        await expect(longFactor.getByText("★☆☆")).toBeVisible();
+
+        const dirtFactor = turboRow.getByText("ダート");
+        await expect(dirtFactor.getByText("★★★")).toBeVisible();
+
+        const inherentFactors = await turboRow.getByText("固有").all();
+        const inherentFactorsInnerTexts = await Promise.all(inherentFactors.map(locator => locator.innerHTML()));
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("★★☆")).length === 2).toBeTruthy();
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("★☆☆")).length === 1).toBeTruthy();
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("☆☆☆")).length === 0).toBeTruthy();
+    })
+});

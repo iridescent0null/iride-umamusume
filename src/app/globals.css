@@ -353,3 +353,22 @@ button {
   display: flex;
   flex-wrap: wrap;
 }
+
+.tiny-factor{
+  display: flex;
+  margin-left: 5px;
+  font-size: small;
+}
+
+.hof-row .tiny-factor .factor {
+  font-size: smaller;
+  width: 100px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 5px;
+}
+
+.hof-row .date-column {
+  width: 85px;
+  margin-left: 5px
+}

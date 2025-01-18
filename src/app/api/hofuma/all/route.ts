@@ -13,7 +13,9 @@ interface HoFUmaSummary {
     redKind: UmaPropertyKey,
     blueStar: Star,
     blueKind: UmaParameterKey,
-    greenStar: Star
+    greenStar: Star,
+    father?:  Types.ObjectId,
+    mother?: Types.ObjectId
 }
 
 export async function GET() {
@@ -28,7 +30,9 @@ export async function GET() {
                     "redKind",
                     "blueStar",
                     "blueKind",
-                    "greenStar"
+                    "greenStar",
+                    "father",
+                    "mother"
                 ]);
         return NextResponse.json(allHofUmas);
     } catch (err) {
