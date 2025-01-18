@@ -293,12 +293,13 @@ const SkillRowSchema = new Schema({ //TODO not tested yet
 });
 // TODO index with unique constraint
 
-type IconColor = "normal" | "blue" | "green";
+type IconColor = "normal" | "blue" | "green" | "red";
 type BackgroundColor = "normal" | "gold" | "red" | "iridescent";
 const iconColorMap = new Map<IconColor,number>();
 iconColorMap.set("normal",0);
 iconColorMap.set("blue",1);
 iconColorMap.set("green",2);
+iconColorMap.set("red",3);
 function codeIconColor(color: IconColor) {
     return iconColorMap.get(color);
 }
@@ -323,7 +324,7 @@ const SkillSchema = new Schema({
         type: String,
         required: true
     },
-    iconColor: { // TODO code and decode  (0, normal; 1 blue; 2 green)
+    iconColor: { // TODO code and decode  (0, normal; 1 blue; 2 green, 3:red)
         type: Number,
         required: true
     },
