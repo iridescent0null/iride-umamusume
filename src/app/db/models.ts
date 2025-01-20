@@ -166,7 +166,9 @@ function codeUmaParameterKey(plainName: string) {
 function decodeUmaParameterKey(key: UmaParameterKey) {
     return [...parameterKeykMap.entries()].find(entry => entry[1] === key)?.[0]
 }
-
+function getUmaParameterKeys() {
+    return [...parameterKeykMap.keys()];
+}
 
 const HoFUmaSchema = new Schema({
     created: {
@@ -366,5 +368,5 @@ export const WhiteFactorModel = mongoose.models?.white_factors || mongoose.model
 export const RaceModel = mongoose.models?.races || mongoose.model("races", RaceSchema);
 export const ScenarioFactorNameModel = mongoose.models?.scenario_factor_names || mongoose.model("scenario_factor_names", ScenarioFactorNameSchema);
 
-export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor, decodeUmaParameterKey};
+export { codeRank, decodeRank, getRanks, codeUmaPropertyKey, decodeUmaPropertyKey, getUmaPropertyKeys, codeIconColor, codeBackgroundColor, decodeIconColor, decodeBackgroundColor, decodeUmaParameterKey, getUmaParameterKeys, codeUmaParameterKey};
 export type { Rank, UmaPropertyKey, Field, Distance, Style, IconColor, BackgroundColor, UmaParameterKey };

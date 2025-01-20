@@ -61,7 +61,7 @@ const SkillRowDivision = (props: SkillProps) => {
                     <Image className="uma-icon" src={`/uma/icons/${historicUmaNameEn}_icon.png`} fill={true} alt={""}/>
                 }
             </span>
-            <span className="skill-column skill-column-long" key={skill._id.toString()+"_id"}>{skill._id.toString()}</span>
+            <span className="skill-column skill-column-long skill-id" key={skill._id.toString()+"_id"}>{skill._id.toString()}</span>
         </div>
     );
 }

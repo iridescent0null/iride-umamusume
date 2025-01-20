@@ -372,3 +372,116 @@ button {
   width: 85px;
   margin-left: 5px
 }
+
+.hof-register-form .dual {
+  display: flex;
+}
+.hof-register-form .left-side {
+  width: 50%;
+}
+.hof-register-form .right-side {
+  width: 50%;
+}
+.hof-register-form .skill-id {
+  font-size: small;
+  width: 200px;
+}
+.check-object-pair {
+  display: flex;
+}
+.check-object-pair option{
+  color: gold;
+}
+.component-skill-list {
+  margin: 10px;
+}
+.hof-register-form input {
+  margin-left: 10px;
+}
+.historic-uma-icon-selector {
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.historic-uma-icon-selector .uma-icon-wrapper .uma-icon {
+  border: solid black 4px;
+}
+.historic-uma-icon-selector .uma-icon-wrapper .uma-icon:hover {
+  opacity: 50%;
+}
+.historic-uma-icon-selector .uma-icon-wrapper.selected .uma-icon {
+  border: solid violet 4px;
+  opacity: 50%;
+}
+
+.factor-selector {
+  margin: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.factor-selector.red-factor-selector  {
+  background-color: salmon;
+}
+
+.factor-selector.blue-factor-selector  {
+  background-color: skyblue;
+}
+
+.factor-selector.green-factor-selector  {
+  background-color: greenyellow;
+}
+
+.parameter-input {
+  display: flex;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.parameter-input .input-row label {
+  margin-top: 5px;
+  height: 20px;
+  display: block
+}
+
+.parameter-input .input-row input {
+  margin-top: 5px;
+  height: 20px;
+  display: block;
+  border-radius: 5px;
+  width: 50px;
+}
+
+.hof-additional-input {
+  display: block;
+  margin-left: 10px;
+}
+
+.hof-additional-input input{
+  margin-right: 20px;
+}
+.hof-additional-input select{
+  margin-right: 20px;
+  border-radius: 5px;
+}
+
+.hof-register-form .textarea-wrapper {
+  margin-top: 30px;
+  margin-left: 10px;
+}
+
+.component-race-list, .component-scenario-factor-list {
+  width: 50%;
+}
+
+.double-factor-list-wrapper {
+  display: flex;
+}
+
+.bottom-button-wrapper {
+  margin-top: 50px;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
