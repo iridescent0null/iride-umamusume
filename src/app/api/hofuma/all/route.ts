@@ -14,6 +14,7 @@ interface HoFUmaSummary {
     blueStar: Star,
     blueKind: UmaParameterKey,
     greenStar: Star,
+    point: number,
     father?:  Types.ObjectId,
     mother?: Types.ObjectId
 }
@@ -31,6 +32,7 @@ export async function GET() {
                     "blueStar",
                     "blueKind",
                     "greenStar",
+                    "point",
                     "father",
                     "mother"
                 ]);
