@@ -4,16 +4,22 @@ import SkillRowDivision, { Skill } from "./skillRow";
 import { getRoot } from "../utils/webinfo";
 import { Ids } from "../historic/all/page";
 import { Types } from "mongoose";
+import { Star } from "./hof";
 
-const DynamicSkillListDiv = () => {
+interface DynamicSkillListDivProps{
+    skillSetter: (key: Types.ObjectId, value: Star | 0) => Map<Types.ObjectId,Star | 0>
+}
+
+const DynamicSkillListDiv = (props: DynamicSkillListDivProps) => {
     const [allSkills,setAllSkills] = useState<Skill[]>([]);
     const [keyword,setKeyWord] = useState<string>("");
     const [onlyNormal,setOnlyNormal] = useState<boolean>(true);
-    const [skillWhiteFactors] = useState<Map<Types.ObjectId,number>>(new Map());
+    const [skillWhiteFactors] = useState<Map<Types.ObjectId, Star | 0>>(new Map());
+    const [forceReload,setForceReload] = useState<boolean>(false);
 
     useEffect(() => {
         const getSkills = () => {
-            if (allSkills.length > 0) {
+            if (allSkills.length > 0 && !forceReload) {
                 return;
             }
             fetch(`${getRoot()}api/skill/ids`)
@@ -28,14 +34,16 @@ const DynamicSkillListDiv = () => {
                 );
             })
             .then((skills: Skill[]) => {
+                setForceReload(false);
                 setAllSkills(skills);
             });
         };
         getSkills();
-    },[]);    
+    },[forceReload]);    
 
     return <div className="component-skill-list">
         <button onClick={() => alert([...skillWhiteFactors.entries()])}>see map</button>
+        <button onClickCapture={() => setForceReload(true)}>refresh</button>
         <input type="text" onChange={event => setKeyWord(event.target.value)}></input>
         <input type="checkbox" id="only-normal-checkbox" defaultChecked 
                 onChange={event => setOnlyNormal(event.target.checked)}>
@@ -48,7 +56,10 @@ const DynamicSkillListDiv = () => {
         )
         .map(skill => {
             return <div className="check-object-pair" key={`pair-${skill._id}`}>
-                <select onChange={event => skillWhiteFactors.set(skill._id, Number.parseInt(event.target.value))} defaultValue="0">
+                <select onChange={event => {
+                    skillWhiteFactors.set(skill._id, Number.parseInt(event.target.value) as Star | 0);
+                    props.skillSetter(skill._id, Number.parseInt(event.target.value) as Star | 0)
+                }} defaultValue="0">
                     <option value="0">-</option>
                     <option value="1">★</option>
                     <option value="2">★★</option>

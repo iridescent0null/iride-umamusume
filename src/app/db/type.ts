@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { UmaPropertyKey } from "./models";
+import { UmaParameterKey, UmaPropertyKey } from "./models";
 
 type HistoricUma = HistoricUmaWithoutId & {
     _id: Types.ObjectId, 
@@ -69,7 +69,24 @@ interface HoFUmaWithoutIdProperty {
     redKind: UmaPropertyKey,
     greenStar: number,
     blueStar: number,
-    blueKind: UmaPropertyKey,
+    blueKind: UmaParameterKey,
+    father?: Types.ObjectId,
+    mother?: Types.ObjectId,
+    note?: string
+}
+
+interface HoFUmaWithMaterializedParameterWithoutIdProperty {
+    created: Date,
+    historic: Types.ObjectId,
+    parameter: ParameterWithoutId, // API requires actual numbers, not id
+    star: number,
+    point: number,
+    awakeningLevel: number,
+    redStar: number,
+    redKind: UmaPropertyKey,
+    greenStar: number,
+    blueStar: number,
+    blueKind: UmaParameterKey,
     father?: Types.ObjectId,
     mother?: Types.ObjectId,
     note?: string
@@ -100,4 +117,4 @@ interface FactorWithoutId {
     name: string
 }
 
-export type { HoFUma, HistoricUma, PropertyWithoutId, HoFUmaWithoutIdProperty, Property, ParameterWithoutId, Parameter, WhiteFactorWithoutUma, WhiteFactor, HoFUmaWithoutId, Race, RaceWithoutId, Skill, Factor, FactorWithoutId };
+export type { HoFUma, HistoricUma, PropertyWithoutId, HoFUmaWithoutIdProperty, HoFUmaWithMaterializedParameterWithoutIdProperty, Property, ParameterWithoutId, Parameter, WhiteFactorWithoutUma, WhiteFactor, HoFUmaWithoutId, Race, RaceWithoutId, Skill, Factor, FactorWithoutId };

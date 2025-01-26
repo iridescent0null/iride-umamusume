@@ -1,12 +1,12 @@
 import connectDB from "@/app/db/connect";
 import { HoFUmaModel, ParameterModel, PropertyModel, WhiteFactorModel } from "@/app/db/models";
-import { HoFUma, HoFUmaWithoutId, HoFUmaWithoutIdProperty, Parameter, Property, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
+import { HoFUma, HoFUmaWithMaterializedParameterWithoutIdProperty, HoFUmaWithoutId, Parameter, Property, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
 import { NextRequest, NextResponse } from "next/server";
 import { codeProperty, PropertyCreation } from "../historic/route";
 import { Types } from "mongoose";
 
 interface HoFUmaCreationRequest {
-    hof: HoFUmaWithoutIdProperty,
+    hof: HoFUmaWithMaterializedParameterWithoutIdProperty,
     property: PropertyCreation,
     white_factors: WhiteFactorWithoutUma[]
 }
@@ -105,3 +105,5 @@ export async function POST(request: NextRequest) {
         );
     }
 }
+
+export type { HoFUmaCreationRequest };

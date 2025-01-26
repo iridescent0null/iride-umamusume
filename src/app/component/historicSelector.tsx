@@ -60,7 +60,9 @@ const HistoricUmaSelector = (props: HistoricUmaSelectorProps) => {
                             onClick={()=>{selectUma(uma.id); props.selectUma(uma.id)}
                     }>
                         <span>{uma.name}</span>
-                        <Image className="uma-icon" src={`/uma/icons/${uma.name_en}_icon.png`} fill={true} alt={""}/>
+                        <Image className="uma-icon" src={`/uma/icons/${uma.name_en}_icon.png`} fill={true} alt={uma.name_en} 
+                                sizes="(max-width: 92px) 20vw, (max-width: 92px) 20vw"
+                        />
                     </div>
         )}   
     </div>;

@@ -1,6 +1,6 @@
 import connectDB, { extractIdFromURL } from "@/app/db/connect";
-import { HoFUmaModel, ParameterModel, PropertyModel, UmaPropertyKey, WhiteFactorModel } from "@/app/db/models";
-import { HoFUma, HoFUmaWithoutId, ParameterWithoutId, PropertyWithoutId, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
+import { HoFUmaModel, ParameterModel, PropertyModel, UmaParameterKey, UmaPropertyKey, WhiteFactorModel } from "@/app/db/models";
+import { HoFUma, ParameterWithoutId, PropertyWithoutId, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
 import { Types } from "mongoose";
 import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-module";
 import { NextResponse } from "next/server";
@@ -23,7 +23,7 @@ interface MaterializedHoFUma {
     redKind: UmaPropertyKey,
     greenStar: number,
     blueStar: number,
-    blueKind: UmaPropertyKey,
+    blueKind: UmaParameterKey,
     father?: Types.ObjectId,
     mother?: Types.ObjectId,
     note?: string

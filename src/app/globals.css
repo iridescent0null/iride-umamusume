@@ -360,6 +360,10 @@ button {
   font-size: small;
 }
 
+.hof-row {
+  margin-left: 15px;
+}
+
 .hof-row .tiny-factor .factor {
   font-size: smaller;
   width: 100px;
@@ -368,11 +372,14 @@ button {
   border-radius: 5px;
 }
 
-.hof-row .date-column {
+.hof-row .second-column {
   width: 85px;
-  margin-left: 5px
+  margin-left: 5px;
 }
-
+.hof-row .second-column .point-rank {
+  font-size: larger;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 .hof-register-form .dual {
   display: flex;
 }
@@ -484,4 +491,30 @@ button {
   text-align: center;
   display: block;
   width: 100%;
+}
+
+.property-input {
+  display: block;
+  margin: 30px;
+  border: solid gray 5px;
+  border-radius: 10px;
+  padding: 5px;
+  width: 450px;
+}
+.property-input select {
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.property-input-row {
+  display: flex;
+  margin-top: 10px;
+}
+
+.hof-register-form .caution {
+  margin-top: 10px;
+  color: chocolate;
+  font-size: larger;
+  text-align: center;
+  background-color: gray;
+  padding: 10px;
 }
