@@ -55,3 +55,5 @@ node_modules/
 /playwright/.cache/
 /tests-examples/
 /tests/screenshots/*/*.png
+/tests/screenshots/*/*/*.png
+/tests/json/*/*/*.json

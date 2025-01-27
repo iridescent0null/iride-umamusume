@@ -1,4 +1,5 @@
 import test, { expect } from "@playwright/test";
+import fs from "fs";
 
 test.describe("enjoy basic data browsing", () => {
     const turbo = "677d3fc061d0361aaedd4602";
@@ -369,5 +370,112 @@ test.describe("browse the hof uma list", () => {
         expect(inherentFactorsInnerTexts.filter(html => html.includes("★★☆")).length === 2).toBeTruthy();
         expect(inherentFactorsInnerTexts.filter(html => html.includes("★☆☆")).length === 1).toBeTruthy();
         expect(inherentFactorsInnerTexts.filter(html => html.includes("☆☆☆")).length === 0).toBeTruthy();
-    })
+    });
+});
+
+test.describe("register a hall of fame uma", () => { // FIXME unstable in chrome
+    const ines = "6794ed91931b9dbc095b3b80";
+    test("refer to gentildonna default property", async ({page}, info) => {
+
+        await page.goto("hof/register");
+        const gentildonnaPanel = page.getByText("ジェンティルドンナ"); // expecting there isn't gentil with another dress
+        const gentilPosition = await gentildonnaPanel.boundingBox();
+        await page.mouse.click(gentilPosition!.x, gentilPosition!.y);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        await page.getByText("refer!").click();
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
+
+        expect(await page.$eval("#property-late-selector",
+            async late => (await new Promise(resolve => setTimeout(resolve, 2000)) // FIXME remove the dependence on waiting random duration
+                    .then(() => late as HTMLInputElement)).value)
+        ).toBe("D"); // FIXME resolve tangled await and promise
+
+        expect(await page.$eval("#property-sprint-selector",
+            async late => (await new Promise(resolve => setTimeout(resolve, 2000))
+                    .then(() => late as HTMLInputElement)).value)
+        ).toBe("G");
+
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
+    });
+
+    test("set her father", async ({page}, info) => {
+        await page.goto("hof/register");
+        const fatherInput = page.locator("#father-id-input");
+        await fatherInput.fill(ines);
+
+        const viewButtons = await page.locator("div").filter({has: fatherInput}).getByRole("button",{name: "view"}).all();
+        await viewButtons[0].click();
+        await viewButtons[1].click();
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_ines.png", fullPage: true});
+
+        const father = page.locator("div").filter({has: fatherInput}).locator(".hof-row");
+        const fatherRedFactor = father.getByText("芝");
+        await expect(fatherRedFactor).toBeVisible();
+        await expect(fatherRedFactor.getByText("★★★")).toBeVisible();
+        const fatherBlueFactor = father.getByText("スピード");
+        await expect(fatherBlueFactor).toBeVisible();
+        await expect(fatherBlueFactor.getByText("★★★")).toBeVisible();
+        const fatherGreenFactor = father.getByText("固有");
+        await expect(fatherGreenFactor).toBeVisible();
+        await expect(fatherGreenFactor.getByText("★☆☆")).toBeVisible();
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_ines.png", fullPage: true});
+    });
+
+    // expecting the path exists: tests/json/hof/register
+    test("generate json", async ({page},info) => {
+        const taiki = "678a72ce931b9dbc095a0f35";
+
+        await page.goto("hof/register");
+
+        const fatherInput = page.locator("#father-id-input");
+        await fatherInput.fill(ines);
+        const motherInput = page.locator("#mother-id-input");
+        await motherInput.fill(taiki);
+        const viewButtons = await page.locator("div").filter({has: fatherInput}).getByRole("button",{name: "view"}).all();
+        await viewButtons[0].click();
+        await viewButtons[1].click();
+
+        const gentildonnaPanel = page.getByText("ヴィブロス"); // expecting there isn't vivlos with another dress
+        const gentilPosition = await gentildonnaPanel.boundingBox();
+        await page.mouse.click(gentilPosition!.x, gentilPosition!.y);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        await page.getByText("refer!").click();
+
+
+        page.locator(".red-factor-selector").selectOption({label: "芝"});
+        page.locator(".blue-factor-selector").selectOption({label: "パワー"});
+        // page.locator(".green-factor-selector").selectOption({label: "固有"});
+
+        // currently the three pulldowns for factor stars cannot be distinguished, then set the same value on all of those. 
+        const starPulldowns = await page.locator(".left-side").locator("select").filter({hasText: "★☆☆"}).all();
+        await starPulldowns[0].selectOption({label: "★★☆"});
+        await starPulldowns[1].selectOption({label: "★★☆"});
+        await starPulldowns[2].selectOption({label: "★★☆"});
+
+        await page.locator("#creation-date").fill("2022-02-02");
+        await page.locator("#point").fill("12345");
+        await page.locator("#speed-input").fill("1234");
+        await page.locator("#stamina-input").fill("987");
+        await page.locator("#power-input").fill("1234");
+        await page.locator("#guts-input").fill("456");
+        await page.locator("#wisdom-input").fill("1111");
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_vivlos.png", fullPage: true});
+
+        // TODO add white factors
+        
+        page.on('dialog', dialog => {dialog.accept()});
+        await page.getByRole("button", {name: "confirm"}).click();
+
+        expect(await page.locator("#hof-register-confirm").inputValue()).toContain("hof");
+
+        // anyway output the result
+        const json = await page.locator("#hof-register-confirm").inputValue();
+        fs.writeFileSync("tests/json/hof/register/"+info.project.name+"_vivlos.json",json);
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_vivlos.png", fullPage: true});
+
+        // then check details
+        expect(await page.locator("#hof-register-confirm").inputValue()).toContain("\"late\":\"C\""); // FIXME chrome and webkit are unstable here
+
+        // TODO check white factors 
+    });
 });
