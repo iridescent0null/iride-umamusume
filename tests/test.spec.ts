@@ -371,6 +371,31 @@ test.describe("browse the hof uma list", () => {
         expect(inherentFactorsInnerTexts.filter(html => html.includes("★☆☆")).length === 1).toBeTruthy();
         expect(inherentFactorsInnerTexts.filter(html => html.includes("☆☆☆")).length === 0).toBeTruthy();
     });
+
+    test("count nishino stars including her ancestors", async ({page}, info) => {
+        const nishinoCreationDate = "2025/1/25";
+        await page.goto("hof/all");
+
+        const nishinoDate = page.getByText(nishinoCreationDate);
+        const nishinoRow = page.locator(".hof-row").filter({has: nishinoDate}); 
+
+        const speedFactors = await nishinoRow.getByText("スピード").all();
+        await expect(speedFactors[0].getByText("★★★")).toBeVisible();
+        await expect(speedFactors[1].getByText("★★★")).toBeVisible();
+        await expect(speedFactors[2].getByText("★★★")).toBeVisible();
+
+        const turfFactors = await nishinoRow.getByText("芝").all();
+        await expect(turfFactors[0].getByText("★★★")).toBeVisible();
+        await expect(turfFactors[1].getByText("★★★")).toBeVisible();
+        expect(turfFactors.length === 2).toBeTruthy();
+
+        const inherentFactors = await nishinoRow.getByText("固有").all();
+        const inherentFactorsInnerTexts = await Promise.all(inherentFactors.map(locator => locator.innerHTML()));
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("★★★")).length === 0).toBeTruthy();
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("★★☆")).length === 2).toBeTruthy();
+        expect(inherentFactorsInnerTexts.filter(html => html.includes("★☆☆")).length === 1).toBeTruthy();
+        expect(inherentFactors.length === 3).toBeTruthy();
+    });
 });
 
 test.describe("register a hall of fame uma", () => { // FIXME unstable in chrome

@@ -4,13 +4,15 @@ import { decodeUmaParameterKey, decodeUmaPropertyKey, UmaParameterKey, UmaProper
 import { historicIcon, prettyDate, renderStar, Star } from "./hof";
 import Link from "next/link";
 import { getRoot } from "../utils/webinfo";
+import ParentFactorsWithIconRowDiv from "./parentFactors";
 
 interface ThreeFactors {
     redKind: UmaPropertyKey,
     redStar: Star,
     blueKind: UmaParameterKey,
     blueStar: Star,
-    greenStar: Star
+    greenStar: Star,
+    historic?: Types.ObjectId
 }
 
 interface HoFUmaInlineRowDivProperty {
@@ -100,18 +102,10 @@ const HoFUmaInlineRowDiv = (props: HoFUmaInlineRowDivProperty) => {
         <div className="factor green-factor">固有 {renderStar(uma.greenStar as Star)}</div>
         <div className="parents-tiny-factors-wrapper">
             {!fatherFactors? <></>:
-                <div className="tiny-factor" key="father-factors">
-                    <div className="factor blue-factor">{decodeUmaParameterKey(fatherFactors.blueKind )} {renderStar(fatherFactors.blueStar as Star)}</div>
-                    <div className="factor red-factor">{decodeUmaPropertyKey(fatherFactors.redKind )} {renderStar(fatherFactors.redStar as Star)}</div>
-                    <div className="factor green-factor">固有 {renderStar(fatherFactors.greenStar as Star)}</div> 
-                </div>
+                <ParentFactorsWithIconRowDiv parent={fatherFactors}/>        
             }
             {!motherFactors? <></>:
-                <div className="tiny-factor" key="mother-factors">
-                    <div className="factor blue-factor">{decodeUmaParameterKey(motherFactors.blueKind )} {renderStar(motherFactors.blueStar as Star)}</div>
-                    <div className="factor red-factor">{decodeUmaPropertyKey(motherFactors.redKind )} {renderStar(motherFactors.redStar as Star)}</div>
-                    <div className="factor green-factor">固有 {renderStar(motherFactors.greenStar as Star)}</div> 
-                </div>
+                <ParentFactorsWithIconRowDiv parent={motherFactors}/>
             }
         </div>
     </div>;

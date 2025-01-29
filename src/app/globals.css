@@ -320,6 +320,11 @@ button {
   position: relative;
 }
 
+.hof-row .uma-icon-wrapper.tiny-icon-wrapper {
+  width: 19px;
+  height: 19px;
+}
+
 .hof-row .hof-column {
   display:inline-block;
   text-align: center;

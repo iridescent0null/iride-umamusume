@@ -1,6 +1,6 @@
 import { HoFResponse, MaterializedHoFUma } from "../api/hofuma/[id]/route";
 import { decodeUmaParameterKey, decodeUmaPropertyKey, UmaParameterKey } from "../db/models";
-import { Factor, HistoricUma, HoFUma, Race, Skill, WhiteFactorWithoutUma } from "../db/type";
+import { Factor, HistoricUma, Race, Skill, WhiteFactorWithoutUma } from "../db/type";
 import { getRoot } from "../utils/webinfo";
 import Image from "next/image";
 import ParameterTableDiv from "./parameter";
@@ -34,11 +34,11 @@ function prettyDate (date: string) {
     return new Date(date).toLocaleDateString("ja-JP");
 };
 
-const historicIcon = (historic: Types.ObjectId) => { //TODO should be a component?
+const historicIcon = (historic: Types.ObjectId, tiny?: boolean) => { //TODO should be a component?
     return fetch(`${getRoot()}/api/historic/${historic}`)
     .then(res => res.json())
     .then((historic: HistoricUma) => {
-        return <span className="uma-icon-wrapper">
+        return <span className={`uma-icon-wrapper ${tiny?"tiny-icon-wrapper":""}`}>
             <Image className="uma-icon" src={`/uma/icons/${historic.name_en}_icon.png`} fill={true} alt={""}/>
         </span>;
     })
