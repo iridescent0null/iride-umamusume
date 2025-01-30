@@ -1,9 +1,9 @@
 import connectDB, { extractIdFromURL } from "@/app/db/connect";
 import { HoFUmaModel, ParameterModel, PropertyModel, UmaParameterKey, UmaPropertyKey, WhiteFactorModel } from "@/app/db/models";
 import { HoFUma, ParameterWithoutId, PropertyWithoutId, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
-import { Types } from "mongoose";
+import { DeleteResult, Types } from "mongoose";
 import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-module";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 interface HoFResponse {
     uma: MaterializedHoFUma,
@@ -31,6 +31,18 @@ interface MaterializedHoFUma {
 
 interface WrappedUma {
     _doc: HoFUma
+}
+
+interface DeleteRequest {
+    point: number, // to prevent inadvertent deletion, require the point of the uma who is to be deleted
+    doActually?: boolean
+}
+
+interface Orphans {
+    factors?: WhiteFactor[],
+    property?: PropertyWithoutId,
+    parameter?: ParameterWithoutId,
+    hofUma?: HoFUma
 }
 
 export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
@@ -95,6 +107,101 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
     } catch (err) {
         console.error(err);
         return NextResponse.json({message: "failure"}, {status:500});
+    }
+}
+
+// TODO not tested yet
+const stringifyForLog = (result: DeleteResult, name: string) => {
+    return `${name} deletion: ${result.acknowledged}, ${result.deletedCount}`;
+}; 
+
+export async function DELETE(request: NextRequest, context: RouteModuleHandleContext) {
+    let orphans: Orphans = {}; // to log data which have been failed to be deleted
+    try {
+        const idOrErrorMessage = await extractIdFromURL(context);
+        if (!(typeof idOrErrorMessage === "string")) {
+            return idOrErrorMessage;
+        }
+        connectDB();
+
+        const wrappedUma: WrappedUma | null = await HoFUmaModel.findById(idOrErrorMessage);
+        if (!wrappedUma) {
+            return NextResponse.json({message: "the uma was not found"}, {status:404});
+        }
+        const hofUma = wrappedUma._doc;
+
+        const wrappedParameter = await ParameterModel.findById(hofUma.parameter);
+        const parameter: ParameterWithoutId = wrappedParameter?._doc;
+
+        const wrappedProperty = await PropertyModel.findById(hofUma.property);
+        const property: PropertyWithoutId = wrappedProperty?._doc;
+        const whiteFactors: WhiteFactor[] = await WhiteFactorModel.find({HoFUma: hofUma._id});
+
+        orphans = {
+                factors: whiteFactors,
+                property: property,
+                parameter: parameter,
+                hofUma: hofUma
+        };
+        console.warn("hof delete request was made:");
+        console.log(orphans);
+        
+        const json: DeleteRequest = await request.json();
+
+        if (!json.doActually) {
+            return NextResponse.json(
+                {
+                    message: "your request was correct but caused no effects because it didn't say delete the hof in actuality. Check the following data retrieved then delete her after you convicted you are doing right thing",
+                    hof: hofUma, 
+                    parameter:parameter, 
+                    white_factors: whiteFactors, 
+                    property: property
+                },
+                {status: 202}
+            );
+        }
+
+        if (hofUma.point !== json.point) {
+            return NextResponse.json({message: "the point doesn't match! Double check if you are to delete the right hof."}, {status: 400});
+        }
+
+        // delete data and remove those from the orphan step by step
+        const deletedFactors = await WhiteFactorModel.deleteMany({HoFUma: hofUma._id});
+        console.warn(stringifyForLog(deletedFactors, "factors"));
+        if (deletedFactors.deletedCount < 1) {
+            console.warn("no factor was deleted. This may be caused by an unexpected error or an uma without any white factors.");
+        }
+        orphans.factors = undefined;
+
+        const deletedProperty = await PropertyModel.deleteOne({_id: hofUma.property});
+        console.warn(stringifyForLog(deletedProperty, "property"));
+        if (deletedProperty.deletedCount < 1) {
+            throw new Error("deletion failed!");
+        }
+        orphans.property = undefined;
+
+        const deletedParameter = await ParameterModel.deleteOne({_id: hofUma.parameter});
+        console.warn(stringifyForLog(deletedParameter,"parameter"));
+        if (deletedParameter.deletedCount < 1) {
+            throw new Error("deletion failed!");
+        }
+        orphans.parameter = undefined;
+
+        const deletedHof = await HoFUmaModel.deleteOne({_id: idOrErrorMessage});
+        console.warn(stringifyForLog(deletedHof,"uma"));
+        if (deletedHof.deletedCount < 1) {
+            throw new Error("deletion failed!");
+        }
+
+        return NextResponse.json({
+                factors: deletedFactors,
+                property: deletedProperty,
+                parameter: deletedParameter,
+                hofUma: deletedHof
+        });
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({message: "failure", orphans: orphans}, {status:500});
     }
 }
 
