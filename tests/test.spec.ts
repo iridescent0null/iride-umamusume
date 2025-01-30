@@ -117,8 +117,8 @@ test.describe("historic list", () => {
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible: false}); // mile B, lead E
 
         // make マイル +2 by 4 stars
-        await page.locator("#father-red-factor-key").selectOption({label:"マイル"});
-        const leftBar = await page.locator("#father-red-factor-star-bar");
+        await page.locator("#first-red-factor-key").selectOption({label:"マイル"});
+        const leftBar = await page.locator("#first-red-factor-star-bar");
         if (info.project.name !== "firefox") { // for some reason, firefox tests fail to move sliders or render changes cause by that
             await leftBar.hover({force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
@@ -133,8 +133,8 @@ test.describe("historic list", () => {
         await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible(); // mile C+2 => A
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible:false}); // mile B+2 => A(not S), but lead E
 
-        await page.locator("#mother-red-factor-key").selectOption({label:"先行"});
-        const rightbar = await page.locator("#mother-red-factor-star-bar");
+        await page.locator("#second-red-factor-key").selectOption({label:"先行"});
+        const rightbar = await page.locator("#second-red-factor-star-bar");
         if (info.project.name !== "firefox") { 
             await rightbar.hover( {force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
@@ -148,7 +148,7 @@ test.describe("historic list", () => {
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible();
 
-        await page.locator("#mother-red-factor-key").selectOption({label:"長距離"});
+        await page.locator("#second-red-factor-key").selectOption({label:"長距離"});
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible(); // mile A
@@ -168,8 +168,8 @@ test.describe("historic list", () => {
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible();
 
         // 差し 20 stars
-        await page.locator("#father-red-factor-key").selectOption({label:"差し"});
-        const leftBar = await page.locator("#father-red-factor-star-bar");
+        await page.locator("#first-red-factor-key").selectOption({label:"差し"});
+        const leftBar = await page.locator("#first-red-factor-star-bar");
         if (info.project.name !== "firefox") {
             await leftBar.hover({force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
@@ -179,8 +179,8 @@ test.describe("historic list", () => {
             const leftBarBox = await leftBar.boundingBox()!;
             await page.mouse.click(leftBarBox!.x + starWidth * (10+1), leftBarBox!.y);
         }
-        await page.locator("#mother-red-factor-key").selectOption({label:"差し"});
-        const rightbar = await page.locator("#mother-red-factor-star-bar");
+        await page.locator("#second-red-factor-key").selectOption({label:"差し"});
+        const rightbar = await page.locator("#second-red-factor-star-bar");
         if (info.project.name !== "firefox") { 
             await rightbar.hover( {force: true, position: {x: 0, y: 0}});
             await page.mouse.down();

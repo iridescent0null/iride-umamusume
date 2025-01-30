@@ -13,19 +13,19 @@ interface Ids {
 const ViewAllHistoricUma = () => {
 
     const [umas,setUmas] = useState<HistoricUma[]>([]);
-    const [conditionOneRank, setConditionOneRank] = useState<number>();
-    const [conditionOneKey, setConditionOneKey] = useState<UmaPropertyKey | "">();
-    const [conditionTwoRank, setConditionTwoRank] = useState<number>();
-    const [conditionTwoKey, setConditionTwoKey] = useState<UmaPropertyKey | "">();
-    const [conditionThreeRank, setConditionThreeRank] = useState<number>();
-    const [conditionThreeKey, setConditionThreeKey] = useState<UmaPropertyKey | "">();
-    const [conditionFourRank, setConditionFourRank] = useState<number>();
-    const [conditionFourKey, setConditionFourKey] = useState<UmaPropertyKey | "">();
+    const [conditionOneRank,setConditionOneRank] = useState<number>();
+    const [conditionOneKey,setConditionOneKey] = useState<UmaPropertyKey | "">();
+    const [conditionTwoRank,setConditionTwoRank] = useState<number>();
+    const [conditionTwoKey,setConditionTwoKey] = useState<UmaPropertyKey | "">();
+    const [conditionThreeRank,setConditionThreeRank] = useState<number>();
+    const [conditionThreeKey,setConditionThreeKey] = useState<UmaPropertyKey | "">();
+    const [conditionFourRank,setConditionFourRank] = useState<number>();
+    const [conditionFourKey,setConditionFourKey] = useState<UmaPropertyKey | "">();
 
-    const [fatherRedFactorKey,setFatherRedFactorKey] = useState<UmaPropertyKey | "">();
-    const [fatherRedFactorLevel,setFatherRedFactorLevel] = useState<number>(0);
-    const [motherRedFactorKey,setMotherRedFactorKey] = useState<UmaPropertyKey | "">();
-    const [motherRedFactorLevel,setMotherRedFactorLevel] = useState<number>(0);
+    const [firstRedFactorKey,setFirstRedFactorKey] = useState<UmaPropertyKey | "">();
+    const [firstRedFactorLevel,setFirstRedFactorLevel] = useState<number>(0);
+    const [secondRedFactorKey,setSecondRedFactorKey] = useState<UmaPropertyKey | "">();
+    const [secondRedFactorLevel,setSecondRedFactorLevel] = useState<number>(0);
 
     /** 
      * determine how it looses the limitation considering red factors. \
@@ -36,11 +36,11 @@ const ViewAllHistoricUma = () => {
     const determineEaseValue = (key: UmaPropertyKey) => {
         const starMax = 10;
         let stars = 0;
-        if (fatherRedFactorKey === key) {
-            stars = stars + fatherRedFactorLevel;
+        if (firstRedFactorKey === key) {
+            stars = stars + firstRedFactorLevel;
         }
-        if (motherRedFactorKey === key) {
-            stars = stars + motherRedFactorLevel;
+        if (secondRedFactorKey === key) {
+            stars = stars + secondRedFactorLevel;
         }
         if (stars > starMax) {
             stars = starMax;
@@ -106,8 +106,8 @@ const ViewAllHistoricUma = () => {
         (document.getElementById("historic-condition-four-key") as HTMLSelectElement).value = "mile";
         setConditionFourKey("mile");
 
-        (document.getElementById("father-red-factor-key") as HTMLSelectElement).value = "dirt";
-        setFatherRedFactorKey("dirt");
+        (document.getElementById("first-red-factor-key") as HTMLSelectElement).value = "dirt";
+        setFirstRedFactorKey("dirt");
     };
 
     useEffect(() => {
@@ -142,55 +142,55 @@ const ViewAllHistoricUma = () => {
         return <div className="dynamic-table">
             <div className="dynamic-search-input">
                 <div className="red-factor-input-wrapper">
-                    <label htmlFor="father-red-factor">father: </label>
-                    <div id="father-red-factor" className="red-factor-input">
-                        <select id="father-red-factor-key" onChange={event => setFatherRedFactorKey(event.target.value as UmaPropertyKey | "")}> 
+                    <label htmlFor="first-red-factor">first: </label>
+                    <div id="first-red-factor" className="red-factor-input">
+                        <select id="first-red-factor-key" onChange={event => setFirstRedFactorKey(event.target.value as UmaPropertyKey | "")}> 
                             <option value="">-</option>
                             {getUmaPropertyKeys().map(key=>
-                                <option value={codeUmaPropertyKey(key)} key={`father-option-${key}`}>
+                                <option value={codeUmaPropertyKey(key)} key={`first-option-${key}`}>
                                     {key}
                                 </option>
                             )}
                         </select>
                             <span className="three-stars">
                             <span className="the-0-star star"></span>
-                            {[1,2,3,4,5,6,7,8,9].map(i => <span className={"the-"+i+"-star star"} key={"father-star-"+i}>
+                            {[1,2,3,4,5,6,7,8,9].map(i => <span className={"the-"+i+"-star star"} key={"first-star-"+i}>
                                 ★
                             </span>)
                             }
-                            <span className="the-10-star star" key="father-star-10">☆</span>
+                            <span className="the-10-star star" key="first-star-10">☆</span>
                         </span><br/>
-                        <span className="star-value">{fatherRedFactorLevel}</span>
+                        <span className="star-value">{firstRedFactorLevel}</span>
                         <span className="star-bar-wrapper">
-                            <input type="range" className="star-bar" id="father-red-factor-star-bar" 
+                            <input type="range" className="star-bar" id="first-red-factor-star-bar" 
                                     min={0} max={10} step={1} defaultValue={0} 
-                                    onChange={event => setFatherRedFactorLevel(Number.parseInt(event.target.value))}
+                                    onChange={event => setFirstRedFactorLevel(Number.parseInt(event.target.value))}
                             />
                         </span>
                     </div>
-                    <label htmlFor="mother-red-factor">mother: </label> 
-                    <div id="mother-red-factor" className="red-factor-input">
-                        <select id="mother-red-factor-key" onChange={event => setMotherRedFactorKey(event.target.value as UmaPropertyKey | "")}> 
+                    <label htmlFor="second-red-factor">second: </label> 
+                    <div id="second-red-factor" className="red-factor-input">
+                        <select id="second-red-factor-key" onChange={event => setSecondRedFactorKey(event.target.value as UmaPropertyKey | "")}> 
                             <option value="">-</option>
                             {getUmaPropertyKeys().map(key=>
-                                <option value={codeUmaPropertyKey(key)} key={`mother-option-${key}`}>
+                                <option value={codeUmaPropertyKey(key)} key={`second-option-${key}`}>
                                     {key}
                                 </option>
                             )}
                         </select>
                         <span className="three-stars">
                             <span className="the-0-star star"></span>
-                            {[1,2,3,4,5,6,7,8,9].map(i => <span className={"the-"+i+"-star star"} key={"mother-star-"+i}>
+                            {[1,2,3,4,5,6,7,8,9].map(i => <span className={"the-"+i+"-star star"} key={"second-star-"+i}>
                                 ★
                             </span>)
                             }
-                            <span className="the-10-star star" key="mother-star-10">☆</span>
+                            <span className="the-10-star star" key="second-star-10">☆</span>
                         </span><br/>
-                        <span className="star-value">{motherRedFactorLevel}</span>
+                        <span className="star-value">{secondRedFactorLevel}</span>
                         <span className="star-bar-wrapper">
-                            <input type="range" className="star-bar" id="mother-red-factor-star-bar" 
+                            <input type="range" className="star-bar" id="second-red-factor-star-bar" 
                                     min={0} max={10} step={1} defaultValue={0} 
-                                    onChange={event => setMotherRedFactorLevel(Number.parseInt(event.target.value))}
+                                    onChange={event => setSecondRedFactorLevel(Number.parseInt(event.target.value))}
                             />
                         </span>
                     </div>
