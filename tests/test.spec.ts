@@ -42,6 +42,8 @@ test.describe("historic list", () => {
     const dirtGMileALeadC = "アイネスフウジン";
     const dirtGMileBLeadE = "ビコーペガサス";
 
+    const dirtGSprintGMileCFrontB = "ゴールドシップ";
+
     test("shortlisting the umas with one condition", async ( {page}, info) => {
         await page.goto("historic/all");
         await expect(page.getByText(dartEUma)).toBeVisible();
@@ -177,18 +179,18 @@ test.describe("historic list", () => {
             await page.mouse.up();
         } else {
             const leftBarBox = await leftBar.boundingBox()!;
-            await page.mouse.click(leftBarBox!.x + starWidth * (10+1), leftBarBox!.y);
+            await page.mouse.click(leftBarBox!.x + starWidth * (10+1), leftBarBox!.y + leftBarBox!.height/2);
         }
         await page.locator("#second-red-factor-key").selectOption({label:"差し"});
         const rightbar = await page.locator("#second-red-factor-star-bar");
         if (info.project.name !== "firefox") { 
             await rightbar.hover( {force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
-            await rightbar.hover({force: true, position: {x: starWidth * (10+1), y: 0}});
+            await rightbar.hover({force: true, position: {x: starWidth * (10), y: 0}});
             await page.mouse.up();
         } else {
             const rightBarBox = await rightbar.boundingBox()!;
-            await page.mouse.click(rightBarBox!.x + starWidth * (10+1), rightBarBox!.y);
+            await page.mouse.click(rightBarBox!.x + starWidth * (10), rightBarBox!.y + rightBarBox!.height/2);
         }
 
         // even 20 stars should not let ranks reach S 
@@ -217,7 +219,134 @@ test.describe("historic list", () => {
         await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible();
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible({visible:false});
         await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible();
-    });      
+    });   
+    
+    test("shortlisting umas with three conditions and six factors", async ({page}, info) => {
+        await page.goto("historic/all");
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+
+        // make it empty with S condition
+        await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
+        await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
+
+        await page.locator("#show-later-red-factor-button").click();
+        await expect(page.locator("#fourth-red-factor")).toContainText("☆");
+        await expect(page.locator("#fifth-red-factor")).toContainText("☆");
+        await expect(page.locator("#sixth-red-factor")).toContainText("☆");
+
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible({visible:false});
+
+        await page.locator("#historic-condition-two-rank").selectOption({label:"D"});
+        await page.locator("#historic-condition-two-key").selectOption({label:"短距離"});
+        await page.locator("#historic-condition-three-rank").selectOption({label:"A"});
+        await page.locator("#historic-condition-three-key").selectOption({label:"先行"});
+        await page.locator("#historic-condition-four-rank").selectOption({label:"A"});
+        await page.locator("#historic-condition-four-key").selectOption({label:"マイル"});
+
+        // loosen the S condition. now it requires ダートC, 先行A, マイルA and 短距離D
+        await page.locator("#historic-condition-one-rank").selectOption({label:"C"});
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
+        await expect(page.getByText(dirtGSprintGMileCFrontB, {exact: true})).not.toBeVisible(); 
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
+
+        await page.locator("#first-red-factor-key").selectOption({label:"ダート"});
+        const firstBar = await page.locator("#first-red-factor-star-bar");
+        if (info.project.name !== "firefox") {
+            await firstBar.hover({force: true, position: {x: 0, y: 0}});
+            await page.mouse.down();
+            await firstBar.hover({force: true, position: {x: starWidth * (10+1), y: 0}});
+            await page.mouse.up();
+        } else {
+            const firstBarBox = await firstBar.boundingBox()!;
+            await page.mouse.click(firstBarBox!.x + starWidth * (10), firstBarBox!.y);
+        }
+        await expect(page.locator("#first-red-factor")).toContainText("10");
+
+        await page.locator("#fourth-red-factor-key").selectOption({label:"短距離"});
+        const fourthBar = await page.locator("#fourth-red-factor-star-bar");
+        if (info.project.name !== "firefox") {
+            await fourthBar.hover({force: true, position: {x: 0, y: 0}});
+            await page.mouse.down();
+            await fourthBar.hover({force: true, position: {x: starWidth * (7), y: 0}});
+            await page.mouse.up();
+        } else {
+            const fourthBarBox = await fourthBar.boundingBox()!;
+            await page.mouse.click(fourthBarBox!.x + starWidth * (7), fourthBarBox!.y + fourthBarBox!.height/2);
+        }
+        await expect(page.locator("#fourth-red-factor")).toContainText("7");
+
+        await page.locator("#sixth-red-factor-key").selectOption({label:"マイル"});
+        const sixthBar = await page.locator("#sixth-red-factor-star-bar");
+        if (info.project.name !== "firefox") {
+            await sixthBar.hover({force: true, position: {x: 0, y: 0}});
+            await page.mouse.down();
+            await sixthBar.hover({force: true, position: {x: starWidth * (4+1), y: 0}});
+            await page.mouse.up();
+        } else {
+            const sixthBarBox = await sixthBar.boundingBox()!;
+            await page.mouse.click(sixthBarBox!.x + starWidth * (4+1), sixthBarBox!.y + sixthBarBox!.height/2);
+        }
+
+        await page.locator("#fifth-red-factor-key").selectOption({label:"先行"});
+        const fifthBar = await page.locator("#fifth-red-factor-star-bar");
+        if (info.project.name !== "firefox") {
+            await fifthBar.hover({force: true, position: {x: 0, y: 0}});
+            await page.mouse.down();
+            await fifthBar.hover({force: true, position: {x: starWidth * (1+1), y: 0}});
+            await page.mouse.up();
+        } else {
+            const fifthBarBox = await fifthBar.boundingBox()!;
+            await page.mouse.click(fifthBarBox!.x + starWidth * (1+1), fifthBarBox!.y + fifthBarBox!.height/2);
+        }
+
+    
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
+        await expect(page.getByText(dirtGSprintGMileCFrontB, {exact: true})).toBeVisible(); 
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
+
+        await page.locator("#sixth-red-factor-key").selectOption({label:"長距離"});
+        await expect(page.getByText(dirtGSprintGMileCFrontB, {exact: true})).not.toBeVisible(); 
+    });
+
+    test("refer to red factors of innes and donna", async ({ page }, info) => {
+        const innesUF9RowId = "hof-row-6794ed91931b9dbc095b3b80"; // turf 3 and intermediate 3*2
+        const donnaUF8RowId = "hof-row-679b5c662361adf38c0cffd7"; // front 2 and dirt 3*2
+
+        await page.goto("historic/all");
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+
+        // make it empty with S condition
+        await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
+        await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
+
+        const innesRow =  page.locator(`#${innesUF9RowId}`);
+        const donnaRow =  page.locator(`#${donnaUF8RowId}`);
+
+        await innesRow.scrollIntoViewIfNeeded();
+        await (await innesRow.getByRole("radio").all())[0].click(); // TODO use radio name instead
+        await donnaRow.scrollIntoViewIfNeeded();
+        await (await donnaRow.getByRole("radio").all())[1].click();
+        await page.getByRole("button", {name: "refer to parent(s)"}).click();
+
+        await page.locator('#first-red-factor-key') .scrollIntoViewIfNeeded();
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_ines_donna.png", fullPage: true});
+
+        // options are NEVER visible in a browser screen, because the item which users see is a select or slot, not the option itself
+        // anyway the existentce can be confirmed with .toBeVisible({"visible":false}).
+        await expect(await (page.locator("#first-red-factor-key").getByRole("option",{selected: true,name: "ダート"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#first-red-factor").locator("span").getByText("6", {"exact": true})).toBeVisible();
+        await expect(await (page.locator('#second-red-factor-key').getByRole("option",{selected: true,name: "芝"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#second-red-factor").locator("span").getByText("3", {"exact": true})).toBeVisible();
+        await expect(await (page.locator('#third-red-factor-key').getByRole("option",{selected: true,name: "先行"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#third-red-factor").locator("span").getByText("2", {"exact": true})).toBeVisible();
+
+        await page.locator("#show-later-red-factor-button").click();
+        await expect(await (page.locator('#fourth-red-factor-key').getByRole("option",{selected: true,name: "中距離"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#fourth-red-factor").locator("span").getByText("6", {"exact": true})).toBeVisible();
+
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_ines_donna.png", fullPage: true}); 
+    });
 });
 
 test.describe("view skill data", () => {

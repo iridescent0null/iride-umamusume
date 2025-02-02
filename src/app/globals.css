@@ -117,6 +117,14 @@ a {
   margin-left: 20px;
 }
 
+.dynamic-table .dual {
+  display: flex;
+}
+
+.dynamic-table .dual .right-part {
+  padding-left: 50px;
+}
+
 footer {
   margin: 30px;
   text-align: center;
@@ -166,9 +174,14 @@ footer {
   display: inline-block;
 }
 
-.red-factor-input-wrapper {
+.red-factor-input-wrapper .red-factor-input-row {
   display: flex;
   margin-bottom: 10px;
+}
+
+.red-factor-input-wrapper .red-factor-input-row label {
+  width: 60px;
+  text-align: right;
 }
 
 button {
@@ -522,4 +535,19 @@ button {
   text-align: center;
   background-color: gray;
   padding: 10px;
+}
+
+.hidden-wrapper {
+  display: none !important;
+}
+
+.hof-select-area {
+  overflow:scroll;
+  height: 600px;
+  border: solid gray 4px;
+  border-radius: 5px;
+}
+
+.hof-select-area-row {
+  display: flex;
 }

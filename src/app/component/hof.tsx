@@ -71,8 +71,10 @@ const HoFRowDivision = (props: HoFUmaProps) => {
 
     let _historic: HistoricUma;
     let _father: MaterializedHoFUma;
+    let _fatherNameEn: string;
     let _fatherWhiteFactors: WhiteFactorWithoutUma[];
     let _mother: MaterializedHoFUma;
+    let _motherNameEn: string;
     let _motherWhiteFactors: WhiteFactorWithoutUma[];
     return fetch(`${getRoot()}/api/historic/${uma.historic}`)
     .then(res => res.json())
@@ -84,7 +86,11 @@ const HoFRowDivision = (props: HoFUmaProps) => {
         .then((father: HoFResponse) => {
             _father = father.uma; // FIXME type confusion between number and star
             _fatherWhiteFactors = father.whiteFactors;
+            return father;
         })
+        .then(father => fetch(`${getRoot()}/api/historic/${father.uma.historic}`)
+        .then(res => res.json())
+        .then(historic => _fatherNameEn = historic.name_en));
     })
     .then(() => {
         return !uma.mother? null 
@@ -93,7 +99,11 @@ const HoFRowDivision = (props: HoFUmaProps) => {
         .then((mother: HoFResponse) => {
             _mother = mother.uma; // FIXME type confusion between number and star
             _motherWhiteFactors = mother.whiteFactors;
+            return mother;
         })
+        .then(mother => fetch(`${getRoot()}/api/historic/${mother.uma.historic}`)
+        .then(res => res.json())
+        .then(historic => _motherNameEn = historic.name_en));
     })
     .then(() => {
         return (
@@ -104,7 +114,7 @@ const HoFRowDivision = (props: HoFUmaProps) => {
                     </span>
                     <div className="hof-content-wrapper">
                     <div className="title">{_historic.name}</div>
-                    <div className="date">{ prettyDate(uma.created)}</div>
+                    <div className="date">{prettyDate(uma.created)}</div>
                     <div className="point"><strong>{uma.point}</strong></div>
                     </div>
                 </div>
@@ -128,11 +138,11 @@ const HoFRowDivision = (props: HoFUmaProps) => {
                 {!_father?<></>:
                     <div className="parent" key="father" id="father-information">
                         <div>-------------------------------------------------------------------------------------</div>
-                            <HoFUmaInlineRowDiv uma={_father as unknown as HoFUmaSummary}/>
+                            <HoFUmaInlineRowDiv uma={_father as unknown as HoFUmaSummary} name_en={_fatherNameEn}/>
                             <div className="white-factor-table">
                                 {!_fatherWhiteFactors? <></>:
                                     _fatherWhiteFactors.map(factor => <div className="white-factor factor">
-                                                {extractName(factor)}:  {renderStar(factor.star as Star)}
+                                                {extractName(factor)}: {renderStar(factor.star as Star)}
                                         </div>)
                                 }
                         </div>
@@ -141,11 +151,11 @@ const HoFRowDivision = (props: HoFUmaProps) => {
                 {!_mother?<></>:
                     <div className="parent" key="mother" id="mother-information">
                         <div>-------------------------------------------------------------------------------------</div>
-                            <HoFUmaInlineRowDiv uma={_mother as unknown as HoFUmaSummary}/>
+                            <HoFUmaInlineRowDiv uma={_mother as unknown as HoFUmaSummary} name_en={_motherNameEn}/>
                             <div className="white-factor-table">
                                 {!_motherWhiteFactors? <></>:
                                     _motherWhiteFactors.map(factor => <div className="white-factor factor">
-                                                {extractName(factor)}:  {renderStar(factor.star as Star)}
+                                                {extractName(factor)}: {renderStar(factor.star as Star)}
                                         </div>)
                                 }
                         </div>
@@ -156,6 +166,7 @@ const HoFRowDivision = (props: HoFUmaProps) => {
     )
     .catch(err => {
         console.error(err);
+        return <>error!</>;
     });
 }
 

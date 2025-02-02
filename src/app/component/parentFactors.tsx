@@ -1,9 +1,10 @@
 import { decodeUmaParameterKey, decodeUmaPropertyKey } from "../db/models";
-import { historicIcon, renderStar, Star } from "./hof";
+import HistoricIconDivision from "./historicIcon";
+import { renderStar, Star } from "./hof";
 import { ThreeFactors } from "./hofRow";
 
 interface ParentFactorWithIconRowDivProperty {
-    parent: ThreeFactors;
+    parent: ThreeFactors
 }
 
 const ParentFactorsWithIconRowDiv = (props: ParentFactorWithIconRowDivProperty) => {
@@ -11,7 +12,7 @@ const ParentFactorsWithIconRowDiv = (props: ParentFactorWithIconRowDivProperty) 
         <div className="factor blue-factor">{decodeUmaParameterKey(props.parent.blueKind)} {renderStar(props.parent.blueStar as Star)}</div>
         <div className="factor red-factor">{decodeUmaPropertyKey(props.parent.redKind)} {renderStar(props.parent.redStar as Star)}</div>
         <div className="factor green-factor">固有 {renderStar(props.parent.greenStar as Star)}</div> 
-        {props.parent.historic? historicIcon(props.parent.historic, true) :<></>}
+        {props.parent.name_en? <HistoricIconDivision name_en={props.parent.name_en} tiny={true}/> :<></>}
     </div>;
 };
 

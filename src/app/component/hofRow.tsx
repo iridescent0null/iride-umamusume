@@ -5,6 +5,7 @@ import { historicIcon, prettyDate, renderStar, Star } from "./hof";
 import Link from "next/link";
 import { getRoot } from "../utils/webinfo";
 import ParentFactorsWithIconRowDiv from "./parentFactors";
+import HistoricIconDivision from "./historicIcon";
 
 interface ThreeFactors {
     redKind: UmaPropertyKey,
@@ -12,16 +13,18 @@ interface ThreeFactors {
     blueKind: UmaParameterKey,
     blueStar: Star,
     greenStar: Star,
-    historic?: Types.ObjectId
+    historic?: Types.ObjectId,
+    name_en: string
 }
 
 interface HoFUmaInlineRowDivProperty {
     uma: HoFUmaSummary,
     fatherFactors?: ThreeFactors,
-    motherFactors?: ThreeFactors 
+    motherFactors?: ThreeFactors,
+    name_en?: string
 }
 
-const fromId = (umaId: Types.ObjectId | string) =>{
+const fromId = (umaId: Types.ObjectId | string) => {
         return fetch(`${getRoot()}api/hofuma/${umaId}`)
         .then(res => res.json())
         .then(json => {
@@ -88,17 +91,19 @@ const HoFUmaInlineRowDiv = (props: HoFUmaInlineRowDivProperty) => {
     const uma = props.uma;
     const fatherFactors = props.fatherFactors;
     const motherFactors = props.motherFactors;
-    
+    const name_en = props.name_en;
+   
     return <div key={uma._id.toString()} className="hof-row">
-            <Link href={`/hof/${uma._id.toString()}`} target="_blank">
-                {historicIcon(uma.historic)}
-            </Link>
+        <Link href={`/hof/${uma._id.toString()}`} target="_blank">
+            {name_en? <HistoricIconDivision name_en={name_en}/>:
+            <></>}
+        </Link>
         <div className="second-column">
             <div className="date-column">{prettyDate(uma.created)}</div>
             <div className="point-rank">{convertToRank(uma.point)}</div>
         </div>
-        <div className="factor blue-factor">{decodeUmaParameterKey(uma.blueKind )} {renderStar(uma.blueStar as Star)}</div>
-        <div className="factor red-factor">{decodeUmaPropertyKey(uma.redKind )} {renderStar(uma.redStar as Star)}</div>
+        <div className="factor blue-factor">{decodeUmaParameterKey(uma.blueKind)} {renderStar(uma.blueStar as Star)}</div>
+        <div className="factor red-factor">{decodeUmaPropertyKey(uma.redKind)} {renderStar(uma.redStar as Star)}</div>
         <div className="factor green-factor">固有 {renderStar(uma.greenStar as Star)}</div>
         <div className="parents-tiny-factors-wrapper">
             {!fatherFactors? <></>:

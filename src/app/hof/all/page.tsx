@@ -16,14 +16,16 @@ const ViewAllHallOfFameUmas = () => {
                         blueKind: uma.blueKind,
                         blueStar: uma.blueStar,
                         greenStar: uma.greenStar,
-                        historic: uma.historic
+                        historic: uma.historic,
+                        name_en: uma.name_en
                     } as ThreeFactors;
         }
 
-        return umas.sort((a,b)=> new Date(a.created).getTime() -  new Date(b.created).getTime()).map(uma =>{
+        return umas.sort((a,b)=> new Date(a.created).getTime() -  new Date(b.created).getTime()).map(uma => { 
             return <HoFUmaInlineRowDiv uma={uma} 
                     fatherFactors={uma.father? extractThreeFactors(uma.father) : undefined}
                     motherFactors={uma.mother? extractThreeFactors(uma.mother) : undefined}
+                    name_en={uma.name_en}
             />;
         }
     );})
