@@ -527,7 +527,7 @@ test.describe("browse the hof uma list", () => {
     });
 });
 
-test.describe("register a hall of fame uma", () => { // FIXME unstable in chrome
+test.describe("register a hall of fame uma", () => {
     const ines = "6794ed91931b9dbc095b3b80";
     test("refer to gentildonna default property", async ({page}, info) => {
 
@@ -535,20 +535,11 @@ test.describe("register a hall of fame uma", () => { // FIXME unstable in chrome
         const gentildonnaPanel = page.getByText("ジェンティルドンナ"); // expecting there isn't gentil with another dress
         const gentilPosition = await gentildonnaPanel.boundingBox();
         await page.mouse.click(gentilPosition!.x, gentilPosition!.y);
-        await new Promise(resolve => setTimeout(resolve, 2000));
         await page.getByText("refer!").click();
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
 
-        expect(await page.$eval("#property-late-selector",
-            async late => (await new Promise(resolve => setTimeout(resolve, 2000)) // FIXME remove the dependence on waiting random duration
-                    .then(() => late as HTMLInputElement)).value)
-        ).toBe("D"); // FIXME resolve tangled await and promise
-
-        expect(await page.$eval("#property-sprint-selector",
-            async late => (await new Promise(resolve => setTimeout(resolve, 2000))
-                    .then(() => late as HTMLInputElement)).value)
-        ).toBe("G");
-
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true, name:"D"})).toBeVisible({"visible": false});
+        await expect(page.locator("#property-sprint-selector").getByRole("option", {selected: true, name: "G"})).toBeVisible({"visible": false});
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
     });
 
@@ -618,6 +609,9 @@ test.describe("register a hall of fame uma", () => { // FIXME unstable in chrome
         // TODO add white factors
         
         page.on('dialog', dialog => {dialog.accept()});
+        
+        // wait for the selector surely get changed, then push the button (chrome sometimes goes ahead hastily)
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true, name:"C"})).toBeVisible({"visible": false});
         await page.getByRole("button", {name: "confirm"}).click();
 
         expect(await page.locator("#hof-register-confirm").inputValue()).toContain("hof");
