@@ -569,6 +569,18 @@ test.describe("register a hall of fame uma", () => {
     // expecting the path exists: tests/json/hof/register
     test("generate json", async ({page},info) => {
         const taiki = "678a72ce931b9dbc095a0f35";
+        const selectedBorderRegex = /rgb\(238, 130, 238\)/; // violet
+
+        const oshikiri = "678a12f135051cd1a38f3b23";
+        const oshikiri3Regex = /{\"star\":[\s]{0,2}3,[\s]{0,2}\"skill\":[\s]{0,2}\"678a12f135051cd1a38f3b23\"}/;
+        const chokkakou = "679788c72361adf38c0c8ac5";
+        const chokkakouAnyRegex = /{\"star\":[\s]{0,2}\d,[\s]{0,2}\"skill\":[\s]{0,2}\"679788c72361adf38c0c8ac5\"}/;
+        const jdd = "6784faad3baffe29bd653f76";
+        const jdd2Regex = /{\"star\":[\s]{0,2}2,[\s]{0,2}\"race\":[\s]{0,2}\"6784faad3baffe29bd653f76\"}/;
+        const asahiFS = "6784fd463baffe29bd653f90";
+        const asahiFS1Regex = /{\"star\":[\s]{0,2}1,[\s]{0,2}\"race\":[\s]{0,2}\"6784fd463baffe29bd653f90\"}/;
+        const mechaGuts = "67850f073baffe29bd653fa3";
+        const mechaGuts1Regex = /{\"star\":[\s]{0,2}1,[\s]{0,2}\"scenario\":[\s]{0,2}\"67850f073baffe29bd653fa3\"}/;
 
         await page.goto("hof/register");
 
@@ -580,12 +592,13 @@ test.describe("register a hall of fame uma", () => {
         await viewButtons[0].click();
         await viewButtons[1].click();
 
-        const gentildonnaPanel = page.getByText("ヴィブロス"); // expecting there isn't vivlos with another dress
-        const gentilPosition = await gentildonnaPanel.boundingBox();
-        await page.mouse.click(gentilPosition!.x, gentilPosition!.y);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await page.getByText("refer!").click();
+        const vivlosPanel = page.getByText("ヴィブロス"); // expecting there isn't vivlos with another dress
+        const vivlosPosition = await vivlosPanel.boundingBox();
 
+        await page.mouse.click(vivlosPosition!.x, vivlosPosition!.y);
+        await expect(page.locator(".selected").getByRole("img")).toHaveCSS("border", selectedBorderRegex);
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: false, name: "A"})).toBeVisible({"visible": false}); // wait for rendering the pulldowns (needed in chrome)
+        await page.getByText("refer!").click();
 
         page.locator(".red-factor-selector").selectOption({label: "芝"});
         page.locator(".blue-factor-selector").selectOption({label: "パワー"});
@@ -600,13 +613,30 @@ test.describe("register a hall of fame uma", () => {
         await page.locator("#creation-date").fill("2022-02-02");
         await page.locator("#point").fill("12345");
         await page.locator("#speed-input").fill("1234");
+        const speedRegex = /\"speed\":[\s]{0,2}1234/;
         await page.locator("#stamina-input").fill("987");
+        const staminaRegex = /\"stamina\":[\s]{0,2}987/;
         await page.locator("#power-input").fill("1234");
+        const powerRegex = /\"power\":[\s]{0,2}1234/;
         await page.locator("#guts-input").fill("456");
+        const gutsRegex = /\"guts\":[\s]{0,2}456/;
         await page.locator("#wisdom-input").fill("1111");
+        const wisdonRegex = /\"wisdom\":[\s]{0,2}1111/;
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_vivlos.png", fullPage: true});
 
-        // TODO add white factors
+        const oshikiriRow = page.locator(".check-object-pair").filter({"hasText": oshikiri});
+        await (oshikiriRow.getByRole("combobox").selectOption("★★★"));
+        const chokkakouRow = page.locator(".check-object-pair").filter({"hasText": chokkakou});
+        await (chokkakouRow.getByRole("combobox").selectOption("★★★"));
+        await (chokkakouRow.getByRole("combobox").selectOption("-"));
+        
+        const jddRowWrapper = page.locator(`#selector-${jdd}`);
+        await (jddRowWrapper.getByRole("combobox").selectOption("★★☆"));
+        const asahiFSRowWrapper = page.locator(`#selector-${asahiFS}`);
+        await (asahiFSRowWrapper.getByRole("combobox").selectOption("★☆☆"));
+
+        const gutsRowWrapper = page.locator(`#selector-${mechaGuts}`);
+        await (gutsRowWrapper.getByRole("combobox").selectOption("★☆☆"));
         
         page.on('dialog', dialog => {dialog.accept()});
         
@@ -615,15 +645,22 @@ test.describe("register a hall of fame uma", () => {
         await page.getByRole("button", {name: "confirm"}).click();
 
         expect(await page.locator("#hof-register-confirm").inputValue()).toContain("hof");
-
         // anyway output the result
         const json = await page.locator("#hof-register-confirm").inputValue();
         fs.writeFileSync("tests/json/hof/register/"+info.project.name+"_vivlos.json",json);
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_vivlos.png", fullPage: true});
 
         // then check details
-        expect(await page.locator("#hof-register-confirm").inputValue()).toContain("\"late\":\"C\""); // FIXME chrome and webkit are unstable here
-
-        // TODO check white factors 
+        expect(await page.locator("#hof-register-confirm").inputValue()).toContain("\"late\":\"C\"");
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(oshikiri3Regex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).not.toMatch(chokkakouAnyRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(jdd2Regex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(asahiFS1Regex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(mechaGuts1Regex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(speedRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(staminaRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(powerRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(gutsRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(wisdonRegex);
     });
 });
