@@ -551,3 +551,7 @@ button {
 .hof-select-area-row {
   display: flex;
 }
+
+.hidden-row {
+  display: none;
+}

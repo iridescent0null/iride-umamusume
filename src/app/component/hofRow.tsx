@@ -21,7 +21,8 @@ interface HoFUmaInlineRowDivProperty {
     uma: HoFUmaSummary,
     fatherFactors?: ThreeFactors,
     motherFactors?: ThreeFactors,
-    name_en?: string
+    name_en?: string,
+    requiredKeys?: UmaPropertyKey[]
 }
 
 const fromId = (umaId: Types.ObjectId | string) => {
@@ -92,6 +93,7 @@ const HoFUmaInlineRowDiv = (props: HoFUmaInlineRowDivProperty) => {
     const fatherFactors = props.fatherFactors;
     const motherFactors = props.motherFactors;
     const name_en = props.name_en;
+    const keys: UmaPropertyKey[] = props.requiredKeys || [];
    
     return <div key={uma._id.toString()} className="hof-row">
         <Link href={`/hof/${uma._id.toString()}`} target="_blank">

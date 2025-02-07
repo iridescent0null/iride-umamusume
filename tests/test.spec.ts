@@ -44,6 +44,8 @@ test.describe("historic list", () => {
 
     const dirtGSprintGMileCFrontB = "ゴールドシップ";
 
+    const innshiShukaiPresetButtonTitle = "因果preset";
+
     test("shortlisting the umas with one condition", async ( {page}, info) => {
         await page.goto("historic/all");
         await expect(page.getByText(dartEUma)).toBeVisible();
@@ -320,8 +322,8 @@ test.describe("historic list", () => {
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
 
-        const innesRow =  page.locator(`#${innesUF9RowId}`);
-        const donnaRow =  page.locator(`#${donnaUF8RowId}`);
+        const innesRow = page.locator(`#${innesUF9RowId}`);
+        const donnaRow = page.locator(`#${donnaUF8RowId}`);
 
         await innesRow.scrollIntoViewIfNeeded();
         await (await innesRow.getByRole("radio").all())[0].click(); // TODO use radio name instead
@@ -346,6 +348,96 @@ test.describe("historic list", () => {
         await expect ( page.locator("#fourth-red-factor").locator("span").getByText("6", {"exact": true})).toBeVisible();
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_ines_donna.png", fullPage: true}); 
+    });
+
+    test("refer to and shortlisting hof umas", async ({ page }, info) => {
+        const turfAIntermediateE = "ニシノフラワー【Sweet Juneberry】";
+
+        const pearlUE1RowId = "hof-row-67a31eb4f32a56e411f3b56b";
+        const fukukitaruUF4RowId = "hof-row-67960662931b9dbc095b44fe";
+        await page.goto("historic/all");
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+
+        // make it empty with S condition
+        await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
+        await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
+
+        const pearlRow = page.locator(`#${pearlUE1RowId}`);
+        const fukukitaruRow = page.locator(`#${fukukitaruUF4RowId}`);
+
+        await pearlRow.scrollIntoViewIfNeeded();
+        await (await pearlRow.getByRole("radio").all())[0].click();
+        await fukukitaruRow.scrollIntoViewIfNeeded();
+        await (await fukukitaruRow.getByRole("radio").all())[1].click();
+
+        // hide both beforehand
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("短距離");
+        await expect(pearlRow).toBeVisible({visible:false});
+        await expect(fukukitaruRow).toBeVisible({visible:false});
+
+        await page.getByRole("button", {name: "refer to parent(s)"}).click();
+        await expect(await (page.locator("#first-red-factor-key").getByRole("option",{selected: true,name: "ダート"}))).toBeVisible({"visible":false});
+        await expect(page.locator("#first-red-factor").locator("span").getByText("10", {"exact": true})).toBeVisible();
+
+        // make them show
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("ダート");
+        await expect(pearlRow).toBeVisible({visible:true});
+        await expect(fukukitaruRow).toBeVisible({visible:true});
+
+        // hide both again, then release one of them
+        await page.locator("#setHofRedFactorFilterSecond").selectOption("短距離");
+        await page.locator("#setHofRedFactorFilterThird").selectOption("先行");
+        await page.locator("#setHofRedFactorFilterSecond").selectOption("-");
+        await expect(pearlRow).toBeVisible({visible:true});
+        await expect(fukukitaruRow).toBeVisible({visible:false});
+
+        // finally make historic ニシノ blink, who has E dirt
+        await page.getByRole("button", {name: innshiShukaiPresetButtonTitle}).click(); // requiring  芝A, ダートC, 中距離B, マイルB
+        await expect(page.locator(".uma-row").filter({hasText: turfAIntermediateE})).toBeVisible({visible:false});
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_pearl_fukukitaru.png", fullPage: true});
+
+        await page.locator("#historic-condition-three-rank").selectOption({label:"D"});
+        await expect(page.locator(".uma-row").filter({hasText: turfAIntermediateE})).toBeVisible({visible:true});
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_pearl_fukukitaru.png", fullPage: true}); 
+    });
+
+    test("shortlisting hof umas with their father or mother", async ({ page }, info) => { 
+        const longMotherHoF = "6785f6ae35051cd1a38e565f";
+        const intermediateFatherHoF = "679735422361adf38c0c8707";
+
+        await page.goto("historic/all");
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+
+        const longMotherHoFRow = page.locator(`#hof-row-${longMotherHoF}`);
+        const intermediateFatherHoFRow = page.locator(`#hof-row-${intermediateFatherHoF}`);
+
+        // hide both beforehand
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("短距離");
+        await expect(longMotherHoFRow).toBeVisible({visible:false});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
+
+        // then check
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("長距離"); // long
+        await expect(longMotherHoFRow).toBeVisible({visible:true});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
+
+        await page.locator("#setHofRedFactorFilterFourth").selectOption("中距離"); // long && intermediate
+        await expect(longMotherHoFRow).toBeVisible({visible:true});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
+
+        await page.locator("#setHofRedFactorFilterFourth").selectOption("追込"); // long && late
+        await expect(longMotherHoFRow).toBeVisible({visible:false});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
+
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("-"); // true && late
+        await expect(longMotherHoFRow).toBeVisible({visible:false});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
+
+        await page.locator("#setHofRedFactorFilterFourth").selectOption("中距離"); // true && intermediate
+        await expect(longMotherHoFRow).toBeVisible({visible:true});
+        await expect(intermediateFatherHoFRow).toBeVisible({visible:true});
+
+        await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_turbo_el.png", fullPage: true}); 
     });
 });
 

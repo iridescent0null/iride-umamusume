@@ -3,6 +3,7 @@ import { HistoricEntry } from "@/app/api/historic/english/all/route";
 import { HoFUmaSummary } from "@/app/api/hofuma/all/route";
 import HistoricRowDividion from "@/app/component/historicRow";
 import HoFUmaInlineRowDiv, { ThreeFactors } from "@/app/component/hofRow";
+import UmaPropertyKeySelect from "@/app/component/part/umaPropertyKeySelect";
 import { UmaPropertyKey, getUmaPropertyKeys, getRanks, codeRank, codeUmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
 import { getRoot } from "@/app/utils/webinfo"
@@ -17,6 +18,14 @@ interface FactorEffect {
     kind: UmaPropertyKey,
     stars: number
 }
+
+const hasDesignatedFactors = (factorSets: (ThreeFactors | undefined)[], keys: UmaPropertyKey[]) => {
+    return keys.every(key=>hasDesignatedFactor(factorSets.filter(a=>a) as ThreeFactors[],key));
+};
+
+const hasDesignatedFactor = (factorSets: ThreeFactors[], key: UmaPropertyKey) => {
+    return factorSets.map(factor => factor.redKind).includes(key);
+};
 
 const ViewAllHistoricUma = () => {
 
@@ -57,7 +66,17 @@ const ViewAllHistoricUma = () => {
                     historic: uma.historic
                 } as ThreeFactors;
     };
-
+    const [hofRedFactorFilterFirst,setHofRedFactorFilterFirst] = useState<UmaPropertyKey | undefined>(undefined);
+    const [hofRedFactorFilterSecond,setHofRedFactorFilterSecond] = useState<UmaPropertyKey | undefined>(undefined);
+    const [hofRedFactorFilterThird,setHofRedFactorFilterThird] = useState<UmaPropertyKey | undefined>(undefined);
+    const [hofRedFactorFilterFourth,setHofRedFactorFilterFourth] = useState<UmaPropertyKey | undefined>(undefined);
+    const hasAnyDesignatedFactor = (hof: HoFUmaSummary, keys: UmaPropertyKey[]) => { // TODO better name to express her or her parents
+        return hasDesignatedFactors([hof,
+                hof.father? extractThreeFactors(hof.father) : undefined,
+                hof.mother? extractThreeFactors(hof.mother) : undefined
+        ],keys);
+    };
+    
     const [historicUmas,setHistoricUmas] = useState<Map<Types.ObjectId,string>>();
 
     /** 
@@ -190,17 +209,9 @@ const ViewAllHistoricUma = () => {
     const consolidateRedFactors = (umas: readonly (HoFUmaSummary | undefined)[]) => {
         const filterdUmas = umas.filter(uma => uma) as HoFUmaSummary[] ;
         const grouped = Object.groupBy(filterdUmas, ({redKind}) => redKind);
-
-        // apparently naive and lousy comparators don't work out in firefox...
-        // return [...Object.entries(grouped)].map(entry => {return {kind: entry[0], stars: entry[1]
-        //             .flatMap(uma1 => uma1.redStar as number)
-        //             .reduce((a,b) => a+b)}})
-        //     .sort((a,b) => (a.kind === "dirt")? -1000 : a.kind.length - b.kind.length) as readonly FactorEffect[];
-
         const array = [...Object.entries(grouped)].map(entry => {return {kind: entry[0], stars: entry[1]
                 .flatMap(uma1 => uma1.redStar as number)
                 .reduce((a,b) => a+b)}}) as FactorEffect[];
-        
 
         // dirt should go to the first place to correspond with Inshi button 
         return bringToFisrtIfKindExists(array,"dirt");
@@ -453,10 +464,16 @@ const ViewAllHistoricUma = () => {
                 </div>
                 <div className="right-part">
                     <button onClick={()=>referToParents()}>refer to parent(s)</button>
+                    <UmaPropertyKeySelect setter={setHofRedFactorFilterFirst} id="setHofRedFactorFilterFirst"/>
+                    <UmaPropertyKeySelect setter={setHofRedFactorFilterSecond} id="setHofRedFactorFilterSecond"/>
+                    <UmaPropertyKeySelect setter={setHofRedFactorFilterThird} id="setHofRedFactorFilterThird"/>
+                    <UmaPropertyKeySelect setter={setHofRedFactorFilterFourth} id="setHofRedFactorFilterFourth"/>
                     <div className="hof-select-area">
                         {!historicUmas?<></>:
                         hofUmas.map(hof => !hof.historic?<>historic missing!</>:
-                            <div className="hof-select-area-row" key={hof._id.toString()} id={`hof-row-${hof._id.toString()}`}>
+                            <div className={`hof-select-area-row ${hasAnyDesignatedFactor(hof,
+                                    [hofRedFactorFilterFirst,hofRedFactorFilterSecond,hofRedFactorFilterThird,hofRedFactorFilterFourth].filter(a=>a) as UmaPropertyKey[]
+                            )? "":"hidden-row"}`} key={hof._id.toString()} id={`hof-row-${hof._id.toString()}`}>
                                 <input type="radio" name="father" value={hof._id.toString()}/>
                                 <input type="radio" name="mother" value={hof._id.toString()}/>
                                 <HoFUmaInlineRowDiv uma={hof} 
