@@ -57,3 +57,7 @@ node_modules/
 /tests/screenshots/*/*.png
 /tests/screenshots/*/*/*.png
 /tests/json/*/*/*.json
+
+#tesseract ( required, but should not tracked but be placed manutally)
+*.traineddata
+*.traineddata.gz

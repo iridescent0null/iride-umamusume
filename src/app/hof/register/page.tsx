@@ -14,6 +14,7 @@ import { getRoot } from "@/app/utils/webinfo";
 import { Types } from "mongoose";
 import { useState } from "react";
 import Image from "next/image";
+import OcrReaderDiv from "@/app/component/ocrReader";
 
 interface ParentSummary {
     uma: HoFUmaSummary,
@@ -460,6 +461,14 @@ const HoFRegisterForm = () => {
         :<></>}
         </div>
         <textarea id="hof-register-confirm"/>
+        <OcrReaderDiv inputIds={{
+            speed: "speed-input",
+            stamina: "stamina-input",
+            power: "power-input",
+            guts: "guts-input",
+            widsom: "wisdom-input",
+            point: "point"
+        }} />
     </div>
 }
 
