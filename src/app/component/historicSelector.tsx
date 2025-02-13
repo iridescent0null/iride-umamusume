@@ -5,6 +5,7 @@ import { getRoot } from "../utils/webinfo";
 import Image from "next/image";
 import { HistoricUma } from "../db/type";
 import { Stranger } from "../api/historic/[id]/route";
+import { isDefined } from "../utils/basicFunctions";
 
 interface UmaIcon {
     id: Types.ObjectId,
@@ -47,7 +48,7 @@ const HistoricUmaSelector = (props: HistoricUmaSelectorProps) => {
                 );
             })
             .then((umas: (UmaIcon | undefined)[]) => {
-                setUmaIcons(umas.filter(a=>a) as UmaIcon[]);
+                setUmaIcons(umas.filter(isDefined));
             });
         };
         getUmaIcons();

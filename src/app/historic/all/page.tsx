@@ -6,6 +6,7 @@ import HoFUmaInlineRowDiv, { ThreeFactors } from "@/app/component/hofRow";
 import UmaPropertyKeySelect from "@/app/component/part/umaPropertyKeySelect";
 import { UmaPropertyKey, getUmaPropertyKeys, getRanks, codeRank, codeUmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
+import { isDefined, isTruely } from "@/app/utils/basicFunctions";
 import { getRoot } from "@/app/utils/webinfo"
 import { Types } from "mongoose"
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ interface FactorEffect {
 }
 
 const hasDesignatedFactors = (factorSets: (ThreeFactors | undefined)[], keys: UmaPropertyKey[]) => {
-    return keys.every(key=>hasDesignatedFactor(factorSets.filter(a=>a) as ThreeFactors[],key));
+    return keys.every(key => hasDesignatedFactor(factorSets.filter(isDefined),key));
 };
 
 const hasDesignatedFactor = (factorSets: ThreeFactors[], key: UmaPropertyKey) => {
@@ -66,7 +67,7 @@ const ViewAllHistoricUma = () => {
                     historic: uma.historic
                 } as ThreeFactors;
     };
-    const [hofRedFactorFilterFirst,setHofRedFactorFilterFirst] = useState<UmaPropertyKey | undefined>(undefined);
+    const [hofRedFactorFilterFirst,setHofRedFactorFilterFirst] = useState<UmaPropertyKey | undefined>(undefined); // FIXME a falsy value but undefined sometimes comes here 
     const [hofRedFactorFilterSecond,setHofRedFactorFilterSecond] = useState<UmaPropertyKey | undefined>(undefined);
     const [hofRedFactorFilterThird,setHofRedFactorFilterThird] = useState<UmaPropertyKey | undefined>(undefined);
     const [hofRedFactorFilterFourth,setHofRedFactorFilterFourth] = useState<UmaPropertyKey | undefined>(undefined);
@@ -207,7 +208,7 @@ const ViewAllHistoricUma = () => {
     }
 
     const consolidateRedFactors = (umas: readonly (HoFUmaSummary | undefined)[]) => {
-        const filterdUmas = umas.filter(uma => uma) as HoFUmaSummary[] ;
+        const filterdUmas = umas.filter(isDefined);
         const grouped = Object.groupBy(filterdUmas, ({redKind}) => redKind);
         const array = [...Object.entries(grouped)].map(entry => {return {kind: entry[0], stars: entry[1]
                 .flatMap(uma1 => uma1.redStar as number)
@@ -472,7 +473,7 @@ const ViewAllHistoricUma = () => {
                         {!historicUmas?<></>:
                         hofUmas.map(hof => !hof.historic?<>historic missing!</>:
                             <div className={`hof-select-area-row ${hasAnyDesignatedFactor(hof,
-                                    [hofRedFactorFilterFirst,hofRedFactorFilterSecond,hofRedFactorFilterThird,hofRedFactorFilterFourth].filter(a=>a) as UmaPropertyKey[]
+                                    [hofRedFactorFilterFirst,hofRedFactorFilterSecond,hofRedFactorFilterThird,hofRedFactorFilterFourth].filter(isTruely)
                             )? "":"hidden-row"}`} key={hof._id.toString()} id={`hof-row-${hof._id.toString()}`}>
                                 <input type="radio" name="father" value={hof._id.toString()}/>
                                 <input type="radio" name="mother" value={hof._id.toString()}/>
