@@ -1,0 +1,55 @@
+This is a note about how to prepare the ocr training environment for hall of fame umamusumes in MacOS
+(I'm still struggling with finding a good ocr traning condition, and cannot tell good commands to train. hopefully i will write those here someday...)
+
+1 Install the OCR library itself, tesseract
+    brew install tesseract
+
+    note: the library pytesseract depends on tesseract, then tesseract is indispensable even if you never use the tesseract command directly
+
+2 Prepare a venv
+    apparently MacOS prevents users from enjoying python naively, then we have to generate a venv
+
+    brew install pipx
+    pipx install pytesseract
+
+    the commands should generate a venv named pytesseract in Users/youraccount/.local/pipx/venvs.
+    ".local" might be invisible, but we can use "Finder > Go > Go to folder" to reach it
+
+3 Install python modules
+    NEVER USE "pipx install xxx"! Inputting the install command again will bring a new venv, bringing a mayhem...
+    Use inject, instead:
+
+        pipx inject tesstrain
+        pipx inject pandas
+        pipx inject python-bidi
+        pipx inject matplotlib
+
+    tesstrain is the core project to enjoy ocr training, and the others are requirement of the tessetrain. So, the additional modules might be required someday (kindly see the latest tesstrain project)
+
+4 Install make (gmake)
+    brew install make
+
+    the command allows you to use gmake command, NOT make. Be aware of that the gmake will have version 4.x.x and the make do 3.x.x:
+        yaretsuna@Pact-of-Negation ~ % make --version
+        GNU Make 3.81
+
+        yaretsuna@Pact-of-Negation ~ % gmake --version
+        GNU Make 4.4.1
+
+5 Check tesseract command
+    e.g.,
+        tesseract --oem 1 --psm 6 your_splendid_image_file.jpeg - -l jpn -c preserve_interword_spaces=1 
+    (for a Japanese image)
+
+    It will print some Japanese text, which might be a little bizarre (if it is perfect, we don't have to train orc you know)
+
+6 Check pytesseract command
+    put the test.py and your image file on your Desktop, and then run the following command
+
+        ~/.local/pipx/venvs/pytesseract/bin/python ~/Desktop/test.py
+
+    Notice the lengthy python command, which explicitly adopts the venv!
+
+Now you can enjoy the tesstrain, using gmake! (not make!) Follow the direction of the tesstrain project, especially you might have to retrieve the best traineddata for Japanese from their repo.
+
+(This direction was written by a not seasoned python user, then please ignore steps which you can say it is not best and use a more sophisticated way.)
