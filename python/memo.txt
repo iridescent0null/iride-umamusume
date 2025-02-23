@@ -1,5 +1,10 @@
-This is a note about how to prepare the ocr training environment for hall of fame umamusumes in MacOS
-(I'm still struggling with finding a good ocr traning condition, and cannot tell good commands to train. hopefully i will write those here someday...)
+This is a note about how to prepare the ocr training environment for hall of fame umamusumes' screenshot in MacOS.
+current the best training condition is the one with default parameters and 50000 iteration:
+    gmake training MODEL_NAME=jpn_hofuma START_MODEL=jpn MAX_ITERATION=50000
+
+Not perfect, but at least it can detect stars (e.g., ★★☆) which cannot be recognized with default japanesetrained data
+
+(0: to conduct training, you need to prepare sufficient ground truth pairs, which consist of image and text should be recognized)
 
 1 Install the OCR library itself, tesseract
     brew install tesseract
@@ -36,7 +41,7 @@ This is a note about how to prepare the ocr training environment for hall of fam
         yaretsuna@Pact-of-Negation ~ % gmake --version
         GNU Make 4.4.1
 
-5 Check tesseract command
+5 Check tesseract command's availability
     e.g.,
         tesseract --oem 1 --psm 6 your_splendid_image_file.jpeg - -l jpn -c preserve_interword_spaces=1 
     (for a Japanese image)
