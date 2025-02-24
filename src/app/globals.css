@@ -589,3 +589,10 @@ button {
   margin-top: 10px;
   margin-left: 50px;
 }
+
+.hof-text {
+  margin-left: 50px;
+  margin-top: 50px;
+  border-radius: 5px;
+  position: relative;
+}
