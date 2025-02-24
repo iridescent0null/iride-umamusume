@@ -4,7 +4,7 @@ import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-m
 import { NextResponse } from "next/server";
 import { HistoricUma } from "@/app/db/type";
 
-/** dummy object for historic uma with which an icon path can be determined */
+/** dummy object for historic uma which has an icon image */
 interface Stranger {
     name: string,
     name_en: string,
@@ -14,8 +14,13 @@ interface Stranger {
 const anshinzawa: Stranger = {
     name: "安心沢刺々美",
     name_en:"anshinzawasasami",
-    note: "dummy object you get when there is no such Uma"
+    note: "dummy object you get when there is no such Uma. You can still retrieve an icon using name_en"
 };
+
+/** to eliminate Stranger, which represents not found */
+function isNOTStranger(uma: HistoricUma | Stranger): uma is HistoricUma {
+    return Object.hasOwn(uma, "_id");
+}
 
 export async function GET(ignored: unknown, context: RouteModuleHandleContext){
     try {
@@ -42,3 +47,4 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext){
 }
 
 export type { Stranger };
+export { isNOTStranger };

@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getRoot } from "../utils/webinfo";
 import Image from "next/image";
 import { HistoricUma } from "../db/type";
-import { Stranger } from "../api/historic/[id]/route";
+import { isNOTStranger, Stranger } from "../api/historic/[id]/route";
 import { isDefined } from "../utils/basicFunctions";
 
 interface UmaIcon {
@@ -34,14 +34,13 @@ const HistoricUmaSelector = (props: HistoricUmaSelectorProps) => {
                         return fetch(`${getRoot()}api/historic/${id.toString()}`)
                         .then(res => res.json())
                         .then((json: HistoricUma | Stranger) => {
-                            if (!Object.hasOwn(json, "_id")) {
+                            if (!isNOTStranger(json)) {
                                 return undefined;
                             }
-                            const narrowedJson = json as HistoricUma;
                             return {
-                                id: narrowedJson._id,
-                                name_en: narrowedJson.name_en,
-                                name: narrowedJson.name
+                                id: json._id,
+                                name_en: json.name_en,
+                                name: json.name
                             } as UmaIcon;
                         })
                     })

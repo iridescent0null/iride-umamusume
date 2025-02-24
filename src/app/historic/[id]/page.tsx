@@ -1,4 +1,4 @@
-import { Stranger } from "@/app/api/historic/[id]/route";
+import { isNOTStranger, Stranger } from "@/app/api/historic/[id]/route";
 import RankDivision from "@/app/component/rank";
 import { decodeRank, decodeUmaPropertyKey, Rank, UmaPropertyKey } from "@/app/db/models";
 import { HistoricUma } from "@/app/db/type";
@@ -18,18 +18,15 @@ const ViewHistoric = (context: RequestContext) => {
     .then(params => {
         return fetch(`${getRoot()}/api/historic/${params.id}`)
         .then(res => res.json())
-        .then((unCheckedHistoric: HistoricUma | Stranger) => {
-            const isStranger = !Object.hasOwn(unCheckedHistoric,"property");
-            if (isStranger) {
-                const stranger = unCheckedHistoric as Stranger;
+        .then((historic: HistoricUma | Stranger) => {
+            if (!isNOTStranger(historic)) {
                 return  <>
                     <div>NOT FOUND</div>
                     <div className="uma-icon-wrapper">
-                        <Image className="uma-icon" src={`/uma/icons/${stranger.name_en}_icon.png`} fill={true} alt={"image"}/>
+                        <Image className="uma-icon" src={`/uma/icons/${historic.name_en}_icon.png`} fill={true} alt={"image"}/>
                     </div>
                 </>;
             }
-            const historic = unCheckedHistoric as HistoricUma;
             const keys = Object.keys(historic.property);
 
             return <>
