@@ -50,13 +50,13 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dartEUma)).toBeVisible();
 
-        // see nothing (there is no umas having S property!)
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"中距離"});
         await expect(page.getByText(dartEUma)).toBeVisible({visible:false});
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_empty.png", fullPage: true});
 
-        // then find ユキノ only in the Japanese style
+        // then find ユキノ only in the Japanese clothes
         await page.locator("#historic-condition-one-rank").selectOption({label:"A"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
         await expect(page.getByText(dartAUmaInSpecialStyle)).toBeVisible(); // dirt A
@@ -73,11 +73,12 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dartEUma)).toBeVisible();
 
-        // make all invisible with a impossible condition
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"追込"});
         await expect(page.getByText(dartEUma)).toBeVisible({visible:false});
 
+        // set moderate conditions
         await page.locator("#historic-condition-two-rank").selectOption({label:"A"});
         await page.locator("#historic-condition-two-key").selectOption({label:"芝"});
         await page.locator("#historic-condition-three-rank").selectOption({label:"A"});
@@ -85,10 +86,10 @@ test.describe("historic list", () => {
         await page.locator("#historic-condition-four-rank").selectOption({label:"A"});
         await page.locator("#historic-condition-four-key").selectOption({label:"長距離"});
 
-        // loose the impossible condition
+        // then loose the impossible S condition. now it requires 芝A, 先行A and 長距離A
         await page.locator("#historic-condition-one-rank").selectOption({label:"E"});
 
-        // テイオー's long properness was strengthend at the Shuntaisai
+        // テイオー's long properness was strengthend only in Shuntaisai style
         await expect(page.getByText(longATeio)).toBeVisible();
         await expect(page.getByText(longBTeio, {exact: true})).toBeVisible({visible:false});
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_quadrapleCondition.png", fullPage: true});
@@ -98,13 +99,14 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
 
-        // make it empty with S condition
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible({visible:false});
 
+        // set moderate conditions
         await page.locator("#historic-condition-two-rank").selectOption({label:"A"});
         await page.locator("#historic-condition-two-key").selectOption({label:"芝"});
         await page.locator("#historic-condition-three-rank").selectOption({label:"D"});
@@ -116,27 +118,28 @@ test.describe("historic list", () => {
         await page.locator("#historic-condition-one-rank").selectOption({label:"G"});
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
-        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible(); // mile A
-        await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible({visible: false}); // mile C
-        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible: false}); // mile B, lead E
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+        await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible({visible: false});
+        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible: false});
 
         // make マイル +2 by 4 stars
         await page.locator("#first-red-factor-key").selectOption({label:"マイル"});
         const leftBar = await page.locator("#first-red-factor-star-bar");
-        if (info.project.name !== "firefox") { // for some reason, firefox tests fail to move sliders or render changes cause by that
+        if (info.project.name !== "firefox") { 
             await leftBar.hover({force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
             await leftBar.hover({force: true, position: {x: starWidth * (4+1), y: 0}});
             await page.mouse.up();
-        } else {
+        } else { // for some reason, firefox tests fail to move sliders, then just click the position instead
             const leftBarBox = await leftBar.boundingBox()!;
             await page.mouse.click(leftBarBox!.x + starWidth * (4+1), leftBarBox!.y);
         }
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
         await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible(); // mile C+2 => A
-        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible:false}); // mile B+2 => A(not S), but lead E
+        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible: false}); // mile B+2 => A(not S), but lead E doesn't suffice (needed is D)
 
+        // make 先行 +1 by a star
         await page.locator("#second-red-factor-key").selectOption({label:"先行"});
         const rightbar = await page.locator("#second-red-factor-star-bar");
         if (info.project.name !== "firefox") { 
@@ -146,21 +149,21 @@ test.describe("historic list", () => {
             await page.mouse.up();
         } else {
             const rightBarBox = await rightbar.boundingBox()!;
-            await page.mouse.click(rightBarBox!.x + starWidth * (4+1), rightBarBox!.y);
+            await page.mouse.click(rightBarBox!.x + starWidth * (1+1), rightBarBox!.y);
         }
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
-        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible();
+        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible(); // now lead E+1 => D suffice the condition
 
+        // get 先行 rank values to their orginal states
         await page.locator("#second-red-factor-key").selectOption({label:"長距離"});
-
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
-        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible(); // mile A
-        await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible(); // mile C
-        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible:false}); // mile A but lead D
+        await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
+        await expect(page.getByText(dirtGMileC, {exact: true})).toBeVisible();
+        await expect(page.getByText(dirtGMileBLeadE, {exact: true})).toBeVisible({visible: false});
     });
 
-    test("any red factor cannot make a S rank", async({page}, info) => {
+    test("any red factor cannot make an S rank", async({page}, info) => {
         await page.goto("historic/all");
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
         await expect(page.getByText(dartEUma, {exact: true})).toBeVisible();
@@ -227,7 +230,7 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
 
-        // make it empty with S condition
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
 
@@ -246,7 +249,7 @@ test.describe("historic list", () => {
         await page.locator("#historic-condition-four-rank").selectOption({label:"A"});
         await page.locator("#historic-condition-four-key").selectOption({label:"マイル"});
 
-        // loosen the S condition. now it requires ダートC, 先行A, マイルA and 短距離D
+        // loosen the S condition to C. now it requires ダートC, 先行A, マイルA and 短距離D
         await page.locator("#historic-condition-one-rank").selectOption({label:"C"});
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
         await expect(page.getByText(dirtGSprintGMileCFrontB, {exact: true})).not.toBeVisible(); 
@@ -259,24 +262,24 @@ test.describe("historic list", () => {
             await page.mouse.down();
             await firstBar.hover({force: true, position: {x: starWidth * (10+1), y: 0}});
             await page.mouse.up();
-        } else {
+        } else { // for some reason, firefox tests fail to move sliders, then just click the position instead
             const firstBarBox = await firstBar.boundingBox()!;
-            await page.mouse.click(firstBarBox!.x + starWidth * (10), firstBarBox!.y);
+            await page.mouse.click(firstBarBox!.x + starWidth * (10), firstBarBox!.y); // FIXME why 11 doesn't work?
         }
         await expect(page.locator("#first-red-factor")).toContainText("10");
 
         await page.locator("#fourth-red-factor-key").selectOption({label:"短距離"});
-        const fourthBar = await page.locator("#fourth-red-factor-star-bar");
+        const fourthBar = await page.locator("#fourth-red-factor-star-bar"); 
         if (info.project.name !== "firefox") {
             await fourthBar.hover({force: true, position: {x: 0, y: 0}});
             await page.mouse.down();
-            await fourthBar.hover({force: true, position: {x: starWidth * (7), y: 0}});
+            await fourthBar.hover({force: true, position: {x: starWidth * (7), y: 0}}); // FIXME why 8 doesn't work?
             await page.mouse.up();
-        } else {
+        } else { 
             const fourthBarBox = await fourthBar.boundingBox()!;
-            await page.mouse.click(fourthBarBox!.x + starWidth * (7), fourthBarBox!.y + fourthBarBox!.height/2);
+            await page.mouse.click(fourthBarBox!.x + starWidth * (7), fourthBarBox!.y + fourthBarBox!.height/2); // FIXME why 8 doesn't work?
         }
-        await expect(page.locator("#fourth-red-factor")).toContainText("7");
+        await expect(page.locator("#fourth-red-factor")).toContainText("7"); 
 
         await page.locator("#sixth-red-factor-key").selectOption({label:"マイル"});
         const sixthBar = await page.locator("#sixth-red-factor-star-bar");
@@ -289,6 +292,7 @@ test.describe("historic list", () => {
             const sixthBarBox = await sixthBar.boundingBox()!;
             await page.mouse.click(sixthBarBox!.x + starWidth * (4+1), sixthBarBox!.y + sixthBarBox!.height/2);
         }
+        await expect(page.locator("#sixth-red-factor")).toContainText("4");
 
         await page.locator("#fifth-red-factor-key").selectOption({label:"先行"});
         const fifthBar = await page.locator("#fifth-red-factor-star-bar");
@@ -301,8 +305,8 @@ test.describe("historic list", () => {
             const fifthBarBox = await fifthBar.boundingBox()!;
             await page.mouse.click(fifthBarBox!.x + starWidth * (1+1), fifthBarBox!.y + fifthBarBox!.height/2);
         }
+        await expect(page.locator("#fifth-red-factor")).toContainText("1");
 
-    
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
         await expect(page.getByText(dirtGSprintGMileCFrontB, {exact: true})).toBeVisible(); 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_six_factors.png", fullPage: true});
@@ -318,29 +322,28 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
 
-        // make it empty with S condition
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
 
         const innesRow = page.locator(`#${innesUF9RowId}`);
         const donnaRow = page.locator(`#${donnaUF8RowId}`);
 
+        // apparently there is no way to designate radio group, therefore we have to believe that playwright brings the radios in fixed order...
         await innesRow.scrollIntoViewIfNeeded();
-        await (await innesRow.getByRole("radio").all())[0].click(); // TODO use radio name instead
+        await (await innesRow.getByRole("radio").all())[0].click(); // 0 is left button, we believe
         await donnaRow.scrollIntoViewIfNeeded();
-        await (await donnaRow.getByRole("radio").all())[1].click();
+        await (await donnaRow.getByRole("radio").all())[1].click(); // 1 is right, we believe
         await page.getByRole("button", {name: "refer to parent(s)"}).click();
 
-        await page.locator('#first-red-factor-key') .scrollIntoViewIfNeeded();
+        await page.locator('#first-red-factor-key').scrollIntoViewIfNeeded();
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_hof_ines_donna.png", fullPage: true});
-
-        // options are NEVER visible in a browser screen, because the item which users see is a select or slot, not the option itself
-        // anyway the existentce can be confirmed with .toBeVisible({"visible":false}).
-        await expect(await (page.locator("#first-red-factor-key").getByRole("option",{selected: true,name: "ダート"}))).toBeVisible({"visible":false});
+        
+        await expect ( page.locator("#first-red-factor-key").getByRole("option", {selected: true})).toHaveText("ダート");
         await expect ( page.locator("#first-red-factor").locator("span").getByText("6", {"exact": true})).toBeVisible();
-        await expect(await (page.locator('#second-red-factor-key').getByRole("option",{selected: true,name: "芝"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#second-red-factor-key").getByRole("option", {selected: true})).toHaveText("芝");
         await expect ( page.locator("#second-red-factor").locator("span").getByText("3", {"exact": true})).toBeVisible();
-        await expect(await (page.locator('#third-red-factor-key').getByRole("option",{selected: true,name: "先行"}))).toBeVisible({"visible":false});
+        await expect ( page.locator("#third-red-factor-key").getByRole("option", {selected: true})).toHaveText("先行");
         await expect ( page.locator("#third-red-factor").locator("span").getByText("2", {"exact": true})).toBeVisible();
 
         await page.locator("#show-later-red-factor-button").click();
@@ -358,7 +361,7 @@ test.describe("historic list", () => {
         await page.goto("historic/all");
         await expect(page.getByText(dirtGMileALeadC, {exact: true})).toBeVisible();
 
-        // make it empty with S condition
+        // see blank list (there is no umas having S property!)
         await page.locator("#historic-condition-one-rank").selectOption({label:"S"});
         await page.locator("#historic-condition-one-key").selectOption({label:"ダート"});
 
@@ -366,9 +369,9 @@ test.describe("historic list", () => {
         const fukukitaruRow = page.locator(`#${fukukitaruUF4RowId}`);
 
         await pearlRow.scrollIntoViewIfNeeded();
-        await (await pearlRow.getByRole("radio").all())[0].click();
+        await (await pearlRow.getByRole("radio").all())[0].click(); // 0 is left button, we believe
         await fukukitaruRow.scrollIntoViewIfNeeded();
-        await (await fukukitaruRow.getByRole("radio").all())[1].click();
+        await (await fukukitaruRow.getByRole("radio").all())[1].click(); // 1 is right, we believe
 
         // hide both beforehand
         await page.locator("#setHofRedFactorFilterFirst").selectOption("短距離");
@@ -376,7 +379,7 @@ test.describe("historic list", () => {
         await expect(fukukitaruRow).toBeVisible({visible:false});
 
         await page.getByRole("button", {name: "refer to parent(s)"}).click();
-        await expect(await (page.locator("#first-red-factor-key").getByRole("option",{selected: true,name: "ダート"}))).toBeVisible({"visible":false});
+        await expect(page.locator("#first-red-factor-key").getByRole("option", {selected: true})).toHaveText("ダート");
         await expect(page.locator("#first-red-factor").locator("span").getByText("10", {"exact": true})).toBeVisible();
 
         // make them show
@@ -417,7 +420,7 @@ test.describe("historic list", () => {
         await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
 
         // then check
-        await page.locator("#setHofRedFactorFilterFirst").selectOption("長距離"); // long
+        await page.locator("#setHofRedFactorFilterFirst").selectOption("長距離"); // long && true
         await expect(longMotherHoFRow).toBeVisible({visible:true});
         await expect(intermediateFatherHoFRow).toBeVisible({visible:false});
 
@@ -465,7 +468,7 @@ test.describe("browse umas in the Hall of Fame", () => {
     const mayaId = "678a168035051cd1a38f3c00"; // expected to have specific factors as written below
     const notFoundId = "777777777777777777777777"; // if there is, change it!
 
-    test("see the maya, the former representve", async ({page}, info) => {
+    test("see the maya, the former representve without her parents' skills", async ({page}, info) => {
         await page.goto(`hof/${mayaId}`);
 
         await expect(page.getByText("マヤノトップガン")).toBeVisible();
@@ -557,7 +560,7 @@ test.describe("browse umas in the Hall of Fame", () => {
         await page.goto(`hof/${notFoundId}`);
 
         await expect(page.getByText("NOT FOUND")).toBeVisible();
-        await expect(page.getByText("Power")).toBeVisible({visible:false});
+        await expect(page.getByText("パワー")).toBeVisible({visible:false});
         await expect(page.getByText("固有")).toBeVisible({visible:false});
     });
 });
@@ -627,11 +630,16 @@ test.describe("register a hall of fame uma", () => {
         const gentildonnaPanel = page.getByText("ジェンティルドンナ"); // expecting there isn't gentil with another dress
         const gentilPosition = await gentildonnaPanel.boundingBox();
         await page.mouse.click(gentilPosition!.x, gentilPosition!.y);
+
+        // wait for rendering options in the pulldowns (needed in chrome)
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: false, name: "D"})).toBeVisible({"visible": false}); 
+        await expect(page.locator("#property-sprint-selector").getByRole("option", {selected: false, name: "G"})).toBeVisible({"visible": false});
+
         await page.getByText("refer!").click();
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
 
-        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true, name:"D"})).toBeVisible({"visible": false});
-        await expect(page.locator("#property-sprint-selector").getByRole("option", {selected: true, name: "G"})).toBeVisible({"visible": false});
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true})).toHaveText("D");
+        await expect(page.locator("#property-sprint-selector").getByRole("option", {selected: true})).toHaveText("G");
         await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_gentil.png", fullPage: true});
     });
 
@@ -663,6 +671,7 @@ test.describe("register a hall of fame uma", () => {
         const taiki = "678a72ce931b9dbc095a0f35";
         const selectedBorderRegex = /rgb\(238, 130, 238\)/; // violet
 
+        // regexs to check the generated json
         const oshikiri = "678a12f135051cd1a38f3b23";
         const oshikiri3Regex = /{\"star\":[\s]{0,2}3,[\s]{0,2}\"skill\":[\s]{0,2}\"678a12f135051cd1a38f3b23\"}/;
         const chokkakou = "679788c72361adf38c0c8ac5";
@@ -686,11 +695,14 @@ test.describe("register a hall of fame uma", () => {
 
         const vivlosPanel = page.getByText("ヴィブロス"); // expecting there isn't vivlos with another dress
         const vivlosPosition = await vivlosPanel.boundingBox();
-
         await page.mouse.click(vivlosPosition!.x, vivlosPosition!.y);
         await expect(page.locator(".selected").getByRole("img")).toHaveCSS("border", selectedBorderRegex);
-        await expect(page.locator("#property-late-selector").getByRole("option", {selected: false, name: "A"})).toBeVisible({"visible": false}); // wait for rendering the pulldowns (needed in chrome)
+
+        // wait for rendering the option, push the button, and then wait for the option selected (needed in chrome test)
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: false, name: "C"})).toBeVisible({"visible": false});
         await page.getByText("refer!").click();
+        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true})).toHaveText("C");
+        await page.screenshot({path: "tests/screenshots/hof/register/"+info.project.name+"_temp.png", fullPage: true});
 
         page.locator(".red-factor-selector").selectOption({label: "芝"});
         page.locator(".blue-factor-selector").selectOption({label: "パワー"});
@@ -702,8 +714,11 @@ test.describe("register a hall of fame uma", () => {
         await starPulldowns[1].selectOption({label: "★★☆"});
         await starPulldowns[2].selectOption({label: "★★☆"});
 
+        // fill a value and prepare regex for the value one by one
         await page.locator("#creation-date").fill("2022-02-02");
+        const creationRegex = /\"created\":[\s]{0,2}\"2022-02-02T/;
         await page.locator("#point").fill("12345");
+        const pointRegex = /\"point\":[\s]{0,2}12345/;
         await page.locator("#speed-input").fill("1234");
         const speedRegex = /\"speed\":[\s]{0,2}1234/;
         await page.locator("#stamina-input").fill("987");
@@ -732,11 +747,9 @@ test.describe("register a hall of fame uma", () => {
         
         page.on('dialog', dialog => {dialog.accept()});
         
-        // wait for the selector surely get changed, then push the button (chrome sometimes goes ahead hastily)
-        await expect(page.locator("#property-late-selector").getByRole("option", {selected: true, name:"C"})).toBeVisible({"visible": false});
         await page.getByRole("button", {name: "confirm"}).click();
-
         expect(await page.locator("#hof-register-confirm").inputValue()).toContain("hof");
+
         // anyway output the result
         const json = await page.locator("#hof-register-confirm").inputValue();
         fs.writeFileSync("tests/json/hof/register/"+info.project.name+"_vivlos.json",json);
@@ -749,6 +762,8 @@ test.describe("register a hall of fame uma", () => {
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(jdd2Regex);
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(asahiFS1Regex);
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(mechaGuts1Regex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(creationRegex);
+        expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(pointRegex);
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(speedRegex);
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(staminaRegex);
         expect(await page.locator("#hof-register-confirm").inputValue()).toMatch(powerRegex);
