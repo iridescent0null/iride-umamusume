@@ -4,7 +4,7 @@ current the best training condition is the one with default parameters and 50000
 
 Not perfect, but at least it can detect stars (e.g., ★★☆) which cannot be recognized with default japanesetrained data
 
-(0: to conduct training, you need to prepare sufficient ground truth pairs, which consist of image and text should be recognized)
+(0: to conduct training, you need to prepare sufficient ground truth pairs, which consist of images and texts should be recognized)
 
 1 Install the OCR library itself, tesseract
     brew install tesseract

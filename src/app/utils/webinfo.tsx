@@ -1,6 +1,6 @@
 const _info = {
     schem: "http",
-    pureDomain: "localhost",
+    pureDomain: "localhost", // change it in the public server
     port: 8080
 }
 
