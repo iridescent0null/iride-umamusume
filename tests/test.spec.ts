@@ -44,7 +44,7 @@ test.describe("historic list", () => {
 
     const dirtGSprintGMileCFrontB = "ゴールドシップ";
 
-    const innshiShukaiPresetButtonTitle = "因果preset";
+    const innshiShukaiPresetButtonTitle = "GI制覇 preset";
 
     test("shortlisting the umas with one condition", async ( {page}, info) => {
         await page.goto("historic/all");
@@ -132,7 +132,7 @@ test.describe("historic list", () => {
             await page.mouse.up();
         } else { // for some reason, firefox tests fail to move sliders, then just click the position instead
             const leftBarBox = await leftBar.boundingBox()!;
-            await page.mouse.click(leftBarBox!.x + starWidth * (4+1), leftBarBox!.y);
+            await page.mouse.click(leftBarBox!.x + starWidth * (4+1), leftBarBox!.y + leftBarBox!.height/2);
         }
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
@@ -149,7 +149,7 @@ test.describe("historic list", () => {
             await page.mouse.up();
         } else {
             const rightBarBox = await rightbar.boundingBox()!;
-            await page.mouse.click(rightBarBox!.x + starWidth * (1+1), rightBarBox!.y);
+            await page.mouse.click(rightBarBox!.x + starWidth * (1+1), rightBarBox!.y + rightBarBox!.height/2);
         }
 
         await page.screenshot({path: "tests/screenshots/histolicList/"+info.project.name+"_factors.png", fullPage: true});
@@ -264,7 +264,7 @@ test.describe("historic list", () => {
             await page.mouse.up();
         } else { // for some reason, firefox tests fail to move sliders, then just click the position instead
             const firstBarBox = await firstBar.boundingBox()!;
-            await page.mouse.click(firstBarBox!.x + starWidth * (10), firstBarBox!.y); // FIXME why 11 doesn't work?
+            await page.mouse.click(firstBarBox!.x + starWidth * (10), firstBarBox!.y + firstBarBox!.height/2); // FIXME why 11 doesn't work?
         }
         await expect(page.locator("#first-red-factor")).toContainText("10");
 

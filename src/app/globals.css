@@ -84,8 +84,12 @@ a {
   color: gray;
 }
 
+.uma-long-column-container {
+  min-width: 780px;
+}
+
 .uma-row .uma-column {
-  display:inline-block;
+  display: inline-block;
   text-align: center;
   width: 25px;
   border-right: solid 1px;
@@ -93,7 +97,7 @@ a {
 }
 
 .uma-row .uma-long-column {
-  display:inline-block;
+  display: inline-block;
   text-align: left;
   width: 500px;
 }
@@ -115,6 +119,7 @@ a {
 
 .dynamic-table {
   margin-left: 20px;
+  margin-top: 20px;
 }
 
 .dynamic-table .dual {
@@ -182,6 +187,11 @@ footer {
 .red-factor-input-wrapper .red-factor-input-row label {
   width: 60px;
   text-align: right;
+}
+
+.red-factor-input-wrapper .minor-note{
+  font-size: smaller;
+  margin-left: 20px;
 }
 
 button {

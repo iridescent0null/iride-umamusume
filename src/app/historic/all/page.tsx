@@ -175,6 +175,25 @@ const ViewAllHistoricUma = () => {
         setFirstRedFactorKey("dirt");
     };
 
+    const clearInput = () => {
+        (document.getElementById("historic-condition-one-rank") as HTMLSelectElement).value = "";
+        setConditionOneRank(undefined);
+        (document.getElementById("historic-condition-one-key") as HTMLSelectElement).value = "";
+        setConditionOneKey("turf");
+        (document.getElementById("historic-condition-two-rank") as HTMLSelectElement).value = "";
+        setConditionTwoRank(undefined);
+        (document.getElementById("historic-condition-two-key") as HTMLSelectElement).value = "";
+        setConditionTwoKey("dirt");
+        (document.getElementById("historic-condition-three-rank") as HTMLSelectElement).value = "";
+        setConditionThreeRank(undefined);
+        (document.getElementById("historic-condition-three-key") as HTMLSelectElement).value = "";
+        setConditionThreeKey("intermediate");
+        (document.getElementById("historic-condition-four-rank") as HTMLSelectElement).value = "";
+        setConditionFourRank(undefined);
+        (document.getElementById("historic-condition-four-key") as HTMLSelectElement).value = "";
+        setConditionFourKey("mile");
+    };
+
     const drawRedFactorBar = (keysetter: Dispatch<SetStateAction<"" | UmaPropertyKey | undefined>>,
             levelSetter: Dispatch<SetStateAction<number>>,
             level: number,
@@ -353,8 +372,11 @@ const ViewAllHistoricUma = () => {
     );
     
         return <div className="dynamic-table">
+            <h2>Character tables</h2>
             <div className="dynamic-search-input">
                 <div className="red-factor-input-wrapper">
+                    <h4>赤因子指定:</h4>
+                    <div className="minor-note">※適性の絞り込み時に考慮（e.g., 初期値が芝Cで、因子が芝★★★★ならば、芝A要求でもOK）</div>
                     <div className="red-factor-input-row">
                         <label htmlFor="first-red-factor">first: </label>
                         {drawRedFactorBar(setFirstRedFactorKey,setFirstRedFactorLevel,firstRedFactorLevel,"first")}
@@ -364,7 +386,7 @@ const ViewAllHistoricUma = () => {
                         {drawRedFactorBar(setThirdRedFactorKey,setThirdRedFactorLevel,thirdRedFactorLevel,"third")}
                     </div>
                     <div className={`${laterRedFactorsHidden?"hidden-":""}wrapper red-factor-input-row`}>
-                        <label htmlFor="second-red-factor">forth: </label> 
+                        <label htmlFor="second-red-factor">fourth: </label> 
                         {drawRedFactorBar(setFourthRedFactorKey,setFourthRedFactorLevel,fourthRedFactorLevel,"fourth")}
                         <label htmlFor="second-red-factor">fifth: </label> 
                         {drawRedFactorBar(setFifthRedFactorKey,setFifthRedFactorLevel,fifthRedFactorLevel,"fifth")}
@@ -375,60 +397,55 @@ const ViewAllHistoricUma = () => {
                     <div className={`${!laterRedFactorsHidden?"hidden-":""}wrapper`}>
                         <button onClick={()=>setLaterRedFactorsHidden(false)} id="show-later-red-factor-button"> + </button>
                     </div>
+
                 </div>
+                <h4>絞り込み条件:</h4>
                 <label htmlFor="historic-condition-one-rank">search condition 1: </label>
-                <select id="historic-condition-one-rank" onChange={event => setConditionOneRank(Number.parseInt(event.target.value))}>
-                    <option value="">-</option>
-                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
-                            {rank}
-                        </option>
-                    )}
-                </select>
                 <select id="historic-condition-one-key" onChange={event => setConditionOneKey(event.target.value as UmaPropertyKey | "")}> 
                     <option value="">-</option>
                     {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
                             {key}
                         </option>
                     )}
-                </select><br/>
-                <label htmlFor="historic-condition-two-rank">search condition 2: </label>
-                <select id="historic-condition-two-rank" onChange={event => setConditionTwoRank(Number.parseInt(event.target.value))}>
+                </select>
+                <select id="historic-condition-one-rank" onChange={event => setConditionOneRank(Number.parseInt(event.target.value))}>
                     <option value="">-</option>
                     {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
                             {rank}
                         </option>
                     )}
-                </select>
+                </select><br/>
+                <label htmlFor="historic-condition-two-rank">search condition 2: </label>
                 <select id="historic-condition-two-key" onChange={event => setConditionTwoKey(event.target.value as UmaPropertyKey | "")}> 
                     <option value="">-</option>
                     {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
                             {key}
                         </option>
                     )}
-                </select><br/>
-                <label htmlFor="historic-condition-three-rank">search condition 3: </label>
-                <select id="historic-condition-three-rank" onChange={event => setConditionThreeRank(Number.parseInt(event.target.value))}>
+                </select>
+                <select id="historic-condition-two-rank" onChange={event => setConditionTwoRank(Number.parseInt(event.target.value))}>
                     <option value="">-</option>
                     {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
                             {rank}
                         </option>
                     )}
-                </select>
+                </select><br/>
+                <label htmlFor="historic-condition-three-rank">search condition 3: </label>
                 <select id="historic-condition-three-key" onChange={event => setConditionThreeKey(event.target.value as UmaPropertyKey | "")}> 
                     <option value="">-</option>
                     {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
                             {key}
                         </option>
                     )}
-                </select><br/>
-                <label htmlFor="historic-condition-four-rank">search condition 4: </label>
-                <select id="historic-condition-four-rank" onChange={event => setConditionFourRank(Number.parseInt(event.target.value))}>
+                </select>
+                <select id="historic-condition-three-rank" onChange={event => setConditionThreeRank(Number.parseInt(event.target.value))}>
                     <option value="">-</option>
                     {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
                             {rank}
                         </option>
                     )}
-                </select>
+                </select><br/>
+                <label htmlFor="historic-condition-four-rank">search condition 4: </label>
                 <select id="historic-condition-four-key" onChange={event => setConditionFourKey(event.target.value as UmaPropertyKey | "")}> 
                     <option value="">-</option>
                     {getUmaPropertyKeys().map(key=><option value={codeUmaPropertyKey(key)} key={`option-${key}`}>
@@ -436,10 +453,18 @@ const ViewAllHistoricUma = () => {
                         </option>
                     )}
                 </select>
+                <select id="historic-condition-four-rank" onChange={event => setConditionFourRank(Number.parseInt(event.target.value))}>
+                    <option value="">-</option>
+                    {getRanks().map(rank=><option value={codeRank(rank)} key={`option-${rank}`}>
+                            {rank}
+                        </option>
+                    )}
+                </select>
             </div>
             <div className="dual">
-                <div>
-                    <button onClick={()=>adoptIngaPreset()}>因果preset</button>
+                <div className="uma-long-column-container">
+                    <button onClick={()=>adoptIngaPreset()}>GI制覇 preset</button><span>: to require property values to win intermediate, mile and dirt races</span>
+                    <br/><button onClick={()=>clearInput()}>Clear</button>
                     <div className="uma-row" key="header">
                         <span className="uma-column uma-long-column">name</span>
                         <span className="uma-column">芝</span>
