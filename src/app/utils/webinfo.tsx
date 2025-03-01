@@ -4,8 +4,21 @@ const _info = {
     port: 8080
 }
 
-function getRoot() {
-    return `${_info.schem}://${_info.pureDomain}${_info.port?":"+_info.port:""}/`
+const _rss = {
+    matomeRankings: {
+        URL: "https://w-jp.com/umamusume/feed"
+    },
+    keibaJapan: {
+        URL: "https://www.keiba.jp/rss/news.xml" // TODO change the source (the feed's update has not been done since 2020...)
+    }
 }
 
-export { getRoot };
+function getRoot() {
+    return `${_info.schem}://${_info.pureDomain}${_info.port?":"+_info.port:""}/`;
+}
+
+function getRSSInfos() {
+    return [...Object.entries(_rss)].map(entry=> {return {name: entry[0], URL: entry[1].URL}});
+}
+
+export { getRoot, getRSSInfos };
