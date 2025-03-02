@@ -1,8 +1,4 @@
-const _info = {
-    schem: "http",
-    pureDomain: "localhost", // change it in the public server
-    port: 8080
-}
+import { _getRoot } from "../../../secret/webRoot";
 
 const _rss = {
     matomeRankings: {
@@ -15,7 +11,7 @@ const _rss = {
 
 /** return the scheme and FQDN, with tail slash (e.g., https://example.co.jp/) */
 function getRoot() {
-    return `${_info.schem}://${_info.pureDomain}${_info.port?":"+_info.port:""}/`;
+    return _getRoot();
 }
 
 function getRSSInfos() {

@@ -5,14 +5,16 @@ All digital assets and creation concerning Umamusume are reserved by Cygames and
 
 __How to start__  
 0: the authentication information to connect to the MongoDB was intentionally omitted from the github repository, then you have to deploy it in the right place.    
-1: unfortunatelly it seem like that next.js cannot track dynamic domain and can't dispense with it in the front end. Therefore you have to fix the webinfo.ts file:  
+1: put secret/webRoot.tsx and write the following information into it:  
 const _info = {  
     schem: "http",  
-    pureDomain: "ec2-xx-xxx-xx-xx.ap-northeast-1.compute.amazonaws.com", // here!  
+    pureDomain: "ec2-xx-xxx-xx-xx.ap-northeast-1.compute.amazonaws.com", 
     port: 8080  
-} 
+}  
 2: in the irid-umamusume directory, run a command like:  
-npm run dev
+npm run dev  
+  
+(Of course the web information is not a secret, but the secret folder contains all files which should not be controlled by git.)  
   
 __Diagnostic__
 0: confirm the machine and service actually started  
