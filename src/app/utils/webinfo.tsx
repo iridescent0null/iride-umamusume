@@ -13,6 +13,7 @@ const _rss = {
     }
 }
 
+/** return the scheme and FQDN, with tail slash (e.g., https://example.co.jp/) */
 function getRoot() {
     return `${_info.schem}://${_info.pureDomain}${_info.port?":"+_info.port:""}/`;
 }
