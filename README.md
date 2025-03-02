@@ -11,6 +11,13 @@ const _info = {
     pureDomain: "ec2-xx-xxx-xx-xx.ap-northeast-1.compute.amazonaws.com", 
     port: 8080  
 }  
+ 
+function _getRoot() {  
+    return `${_info.schem}://${_info.pureDomain}${_info.port?":"+_info.port:""}/`;  
+}  
+  
+export { _getRoot };  
+
 2: in the irid-umamusume directory, run a command like:  
 npm run dev  
   
