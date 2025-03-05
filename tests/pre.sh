@@ -1,2 +1,2 @@
 # fixing the FQDN in the test script 
-sed -i s/localhost/ec2-57-182-177-197.ap-northeast-1.compute.amazonaws.com/ tests/test.spec.ts
+sed -i s/localhost/ec2-57-182-177-197.ap-northeast-1.compute.amazonaws.com/ `pwd`/playwright.config.ts
