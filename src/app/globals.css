@@ -521,6 +521,12 @@ button {
   width: 100%;
 }
 
+.bottom-button-wrapper textarea {
+  margin: 20px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
 .property-input {
   display: block;
   margin: 30px;

@@ -228,91 +228,115 @@ const HoFRegisterForm = () => {
 
     return <div className="hof-register-form">
         <div className="dual">
-        <div className="left-side">
-            <HistoricUmaSelector selectUma={setHistoricUma}/>
-            <div>
-                <select className="factor-selector red-factor-selector" 
-                        onChange={event => setRedFactorKind(event.target.value as UmaPropertyKey | "" )}
-                >
-                    <option value="" key="blank property key"> - </option>
-                    {getUmaPropertyKeys().map(key=>
-                        <option value={codeUmaPropertyKey(key)} key={codeUmaPropertyKey(key)}>{key}</option>
-                    )}
-                </select>
-                <select onChange={event => setRedFactorStar(Number.parseInt(event.target.value)  as (Star | 0))}>
-                    <option value="0">-</option>
-                    <option value="1">★☆☆</option>
-                    <option value="2">★★☆</option>
-                    <option value="3">★★★</option>
-                </select>
-                <select className="factor-selector blue-factor-selector" 
-                        onChange={event => setBlueFactorKind(event.target.value as UmaParameterKey | "" )}
-                >
-                    <option value="" key="blank property key"> - </option>
-                    {getUmaParameterKeys().map(key=>
-                        <option value={codeUmaParameterKey(key)} key={codeUmaParameterKey(key)}>{key}</option>
-                    )}
-                </select>
-                <select onChange={event => setBlueFactorStar(Number.parseInt(event.target.value) as (Star | 0))}>
-                    <option value="0">-</option>
-                    <option value="1">★☆☆</option>
-                    <option value="2">★★☆</option>
-                    <option value="3">★★★</option>
-                </select>
-                <select className="factor-selector green-factor-selector">
-                    <option value="" key="blank property key"> 固有 </option>
-                </select>
-                <select onChange={event => setGreenFactorStar(Number.parseInt(event.target.value) as (Star | 0))}>
-                    <option value="0">-</option>
-                    <option value="1">★☆☆</option>
-                    <option value="2">★★☆</option>
-                    <option value="3">★★★</option>
-                </select> 
-            </div>
-            <div className="hof-additional-input">
-                <label htmlFor="creation-date">created:</label>
-                <input type="date" id="creation-date" defaultValue={defaultDate}></input>
-                <label htmlFor="point">point:</label>
-                <input type="number" id="point" min={0} defaultValue={0}></input><br/>
-                <label htmlFor="awaken-label-selector">awaken level:</label>
-                <select id="awaken-label-selector" defaultValue="5">
-                    <option value="5">Lv 5</option>
-                    <option value="4">Lv 4</option>
-                    <option value="3">Lv 3</option>
-                    <option value="2">Lv 2</option>
-                    <option value="1">Lv 1</option>
-                </select>
-                <label htmlFor="blossom-star-selector">Talent:</label>
-                <select id="blossom-star-selector" defaultValue="3">
-                    <option value="5">★★★★★</option>
-                    <option value="4">★★★★</option>
-                    <option value="3">★★★</option>
-                    <option value="2">★★</option>
-                    <option value="1">★</option>
-                </select>
-            </div>
+            <div className="left-side">
+                <HistoricUmaSelector selectUma={setHistoricUma}/>
+                <div>
+                    <select className="factor-selector red-factor-selector" 
+                            onChange={event => setRedFactorKind(event.target.value as UmaPropertyKey | "" )}
+                    >
+                        <option value="" key="blank property key"> - </option>
+                        {getUmaPropertyKeys().map(key=>
+                            <option value={codeUmaPropertyKey(key)} key={codeUmaPropertyKey(key)}>{key}</option>
+                        )}
+                    </select>
+                    <select onChange={event => setRedFactorStar(Number.parseInt(event.target.value)  as (Star | 0))}>
+                        <option value="0">-</option>
+                        <option value="1">★☆☆</option>
+                        <option value="2">★★☆</option>
+                        <option value="3">★★★</option>
+                    </select>
+                    <select className="factor-selector blue-factor-selector" 
+                            onChange={event => setBlueFactorKind(event.target.value as UmaParameterKey | "" )}
+                    >
+                        <option value="" key="blank property key"> - </option>
+                        {getUmaParameterKeys().map(key=>
+                            <option value={codeUmaParameterKey(key)} key={codeUmaParameterKey(key)}>{key}</option>
+                        )}
+                    </select>
+                    <select onChange={event => setBlueFactorStar(Number.parseInt(event.target.value) as (Star | 0))}>
+                        <option value="0">-</option>
+                        <option value="1">★☆☆</option>
+                        <option value="2">★★☆</option>
+                        <option value="3">★★★</option>
+                    </select>
+                    <select className="factor-selector green-factor-selector">
+                        <option value="" key="blank property key"> 固有 </option>
+                    </select>
+                    <select onChange={event => setGreenFactorStar(Number.parseInt(event.target.value) as (Star | 0))}>
+                        <option value="0">-</option>
+                        <option value="1">★☆☆</option>
+                        <option value="2">★★☆</option>
+                        <option value="3">★★★</option>
+                    </select> 
+                </div>
+                <div className="hof-additional-input">
+                    <label htmlFor="creation-date">created:</label>
+                    <input type="date" id="creation-date" defaultValue={defaultDate}></input>
+                    <label htmlFor="point">point:</label>
+                    <input type="number" id="point" min={0} defaultValue={0}></input><br/>
+                    <label htmlFor="awaken-label-selector">awaken level:</label>
+                    <select id="awaken-label-selector" defaultValue="5">
+                        <option value="5">Lv 5</option>
+                        <option value="4">Lv 4</option>
+                        <option value="3">Lv 3</option>
+                        <option value="2">Lv 2</option>
+                        <option value="1">Lv 1</option>
+                    </select>
+                    <label htmlFor="blossom-star-selector">Talent:</label>
+                    <select id="blossom-star-selector" defaultValue="3">
+                        <option value="5">★★★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="3">★★★</option>
+                        <option value="2">★★</option>
+                        <option value="1">★</option>
+                    </select>
+                </div>
 
-            <div className="parameter-input">
-                <div className="input-row">
-                    <label htmlFor="speed-input">speed: </label>
-                    <label htmlFor="stamina-input">stamina: </label>
-                    <label htmlFor="power-input">power: </label>
-                    <label htmlFor="guts-input">guts: </label>
-                    <label htmlFor="wisdom-input">widsom: </label>
-                </div>
-                <div className="input-row">
-                    <input type="number" id="speed-input" min={0} defaultValue={0}></input>
-                    <input type="number" id="stamina-input" min={0} defaultValue={0}></input>
-                    <input type="number" id="power-input" min={0} defaultValue={0}></input>
-                    <input type="number" id="guts-input" min={0} defaultValue={0}></input>
-                    <input type="number" id="wisdom-input" min={0} defaultValue={0}></input>
-                </div>
-            </div> 
-            <div className="property-input">
-                <button onClick={()=>fillPropertyWithDefaultValues()}>refer!</button>
-                <div className="property-input-row">
-                    <label htmlFor="property-turf-selector">芝:</label>
-                    <select id="property-turf-selector" value={turf} onChange={event => setTurf(event.target.value as Rank)}>
+                <div className="parameter-input">
+                    <div className="input-row">
+                        <label htmlFor="speed-input">speed: </label>
+                        <label htmlFor="stamina-input">stamina: </label>
+                        <label htmlFor="power-input">power: </label>
+                        <label htmlFor="guts-input">guts: </label>
+                        <label htmlFor="wisdom-input">widsom: </label>
+                    </div>
+                    <div className="input-row">
+                        <input type="number" id="speed-input" min={0} defaultValue={0}></input>
+                        <input type="number" id="stamina-input" min={0} defaultValue={0}></input>
+                        <input type="number" id="power-input" min={0} defaultValue={0}></input>
+                        <input type="number" id="guts-input" min={0} defaultValue={0}></input>
+                        <input type="number" id="wisdom-input" min={0} defaultValue={0}></input>
+                    </div>
+                </div> 
+                <div className="property-input">
+                    <button onClick={()=>fillPropertyWithDefaultValues()}>refer!</button>
+                    <div className="property-input-row">
+                        <label htmlFor="property-turf-selector">芝:</label>
+                        <select id="property-turf-selector" value={turf} onChange={event => setTurf(event.target.value as Rank)}>
+                            <option value="S">S</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <label htmlFor="property-dirt-selector">ダート:</label>
+                        <select id="property-dirt-selector" value={dirt} onChange={event => setDirt(event.target.value as Rank)}>
+                            <option value="S">S</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                    </div>
+                    <div className="property-input-row">
+                    <label htmlFor="property-sprint-selector">短距離:</label>
+                    <select id="property-sprint-selector" value={sprint} onChange={event => setSprint(event.target.value as Rank)}>
                         <option value="S">S</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -322,8 +346,8 @@ const HoFRegisterForm = () => {
                         <option value="F">F</option>
                         <option value="G">G</option>
                     </select>
-                    <label htmlFor="property-dirt-selector">ダート:</label>
-                    <select id="property-dirt-selector" value={dirt} onChange={event => setDirt(event.target.value as Rank)}>
+                    <label htmlFor="property-mile-selector">マイル:</label>
+                    <select id="property-mile-selector" value={mile} onChange={event => setMile(event.target.value as Rank)}>
                         <option value="S">S</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -333,134 +357,111 @@ const HoFRegisterForm = () => {
                         <option value="F">F</option>
                         <option value="G">G</option>
                     </select>
+                    <label htmlFor="property-intermediate-selector">中距離:</label>
+                    <select id="property-intermediate-selector" value={intermediate} onChange={event => setIntermediate(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <label htmlFor="property-intermediate-selector">長距離:</label>
+                    <select id="property-long-selector" value={long} onChange={event => setLong(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    </div>
+                    <div className="property-input-row">
+                    <label htmlFor="property-lead-selector">逃げ:</label>
+                    <select id="property-lead-selector" value={lead} onChange={event => setLead(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <label htmlFor="property-front-selector">先行:</label>
+                    <select id="property-front-selector" value={front} onChange={event => setFront(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <label htmlFor="property-holdup-selector">差し:</label>
+                    <select id="property-holdup-selector" value={holdup} onChange={event => setHoldup(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <label htmlFor="property-late-selector">追込:</label>
+                    <select id="property-late-selector" value={late} onChange={event => setLate(event.target.value as Rank)}>
+                        <option value="S">S</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    </div>
                 </div>
-                <div className="property-input-row">
-                <label htmlFor="property-sprint-selector">短距離:</label>
-                <select id="property-sprint-selector" value={sprint} onChange={event => setSprint(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-mile-selector">マイル:</label>
-                <select id="property-mile-selector" value={mile} onChange={event => setMile(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-intermediate-selector">中距離:</label>
-                <select id="property-intermediate-selector" value={intermediate} onChange={event => setIntermediate(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-intermediate-selector">長距離:</label>
-                <select id="property-long-selector" value={long} onChange={event => setLong(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
+                <div className="textarea-wrapper">
+                    <label htmlFor="hof-input-note">Note: </label>
+                    <textarea defaultValue="" id="hof-input-note"/>
                 </div>
-                <div className="property-input-row">
-                <label htmlFor="property-lead-selector">逃げ:</label>
-                <select id="property-lead-selector" value={lead} onChange={event => setLead(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-front-selector">先行:</label>
-                <select id="property-front-selector" value={front} onChange={event => setFront(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-holdup-selector">差し:</label>
-                <select id="property-holdup-selector" value={holdup} onChange={event => setHoldup(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
-                <label htmlFor="property-late-selector">追込:</label>
-                <select id="property-late-selector" value={late} onChange={event => setLate(event.target.value as Rank)}>
-                    <option value="S">S</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                </select>
+                <div>
+                    <label htmlFor="father-id-input">継承元:</label><input type="text" id="father-id-input"></input>
+                    <button onClick={() => retrieveFatherSummary()}>view</button>
+                    {!fatherSummary? <></>:
+                    <HoFUmaInlineRowDiv uma={fatherSummary.uma} name_en={fatherSummary.name_en}/>}
+                </div>
+                <div>
+                    <label htmlFor="mother-id-input">継承元:</label><input type="text" id="mother-id-input"></input>
+                    <button onClick={() => retriveMotherSummary()}>view</button>
+                    {!motherSummary? <></>:
+                    <HoFUmaInlineRowDiv uma={motherSummary.uma} name_en={motherSummary.name_en}/>}
                 </div>
             </div>
-            <div className="textarea-wrapper">
-                <label htmlFor="hof-input-note">Note: </label>
-                <textarea defaultValue="" id="hof-input-note"/>
+            <div id="hof-input-note" className="right-side">
+                <DynamicSkillListDiv skillSetter={skills.set.bind(skills)} />
+                <div className="double-factor-list-wrapper">
+                    <DynamicRaceListDiv raceSetter={races.set.bind(races)} />
+                    <DynamicScenarioFactorListDiv scenarioFactorSetter={scenarios.set.bind(scenarios)} />
+                </div>
             </div>
-            <div>
-                <label htmlFor="father-id-input">継承元:</label><input type="text" id="father-id-input"></input>
-                <button onClick={() => retrieveFatherSummary()}>view</button>
-                {!fatherSummary? <></>:
-                <HoFUmaInlineRowDiv uma={fatherSummary.uma} name_en={fatherSummary.name_en}/>}
-            </div>
-            <div>
-                <label htmlFor="mother-id-input">継承元:</label><input type="text" id="mother-id-input"></input>
-                <button onClick={() => retriveMotherSummary()}>view</button>
-                {!motherSummary? <></>:
-                <HoFUmaInlineRowDiv uma={motherSummary.uma} name_en={motherSummary.name_en}/>}
-            </div>
-        </div>
-        <div id="hof-input-note" className="right-side">
-            <DynamicSkillListDiv skillSetter={skills.set.bind(skills)} />
-            <div className="double-factor-list-wrapper">
-                <DynamicRaceListDiv raceSetter={races.set.bind(races)} />
-                <DynamicScenarioFactorListDiv scenarioFactorSetter={scenarios.set.bind(scenarios)} />
-            </div>
-        </div>
         </div>
         <div className="bottom-button-wrapper">
-            <button onClick={()=>constructJSON()}>confirm</button>
+            <button onClick={()=>constructJSON()}>confirm</button><br/>
+            <textarea id="hof-register-confirm" rows={25} cols={100} placeholder="the json will be generated here (to protect the DB, this form is intentionally disabled to submit the registeration, and just output the json instead, which can be used in actual POST)"/>
         </div>
+
         <div>
             {(fatherSummary && motherSummary && fatherSummary.name_en === motherSummary.name_en)?
            <div className="caution">you cant adopt hall of fame umas sharing the histotic horse (e.g., Vodka and Vodka)!</div> 
         :<></>}
         </div>
-        <textarea id="hof-register-confirm"/>
         <OcrReaderDiv inputIds={{
             speed: "speed-input",
             stamina: "stamina-input",
