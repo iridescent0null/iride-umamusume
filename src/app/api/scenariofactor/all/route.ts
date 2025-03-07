@@ -14,7 +14,7 @@ export async function GET() {
         const allIds = await ScenarioFactorNameModel.find();
         return NextResponse.json({
             message: "success", 
-            factors: allIds.map(factor => {return {name: factor.name, _id:factor._id}})
+            factors: allIds.map(factor => {return {name: factor.name, _id: factor._id}})
         } as AllScenarioFactorResponse);
     } catch (err) {
         console.error(err);

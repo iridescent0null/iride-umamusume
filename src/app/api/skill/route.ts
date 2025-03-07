@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     try {
         const skill: SkillCreationRequest = await request.json();
         connectDB();
+        // tmp variable to enjoy excess property check
         const skillObject: SkillWithoutId = {
             name: skill.name,
             iconColor: codeIconColor(skill.iconColor)!,
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
             inherent: skill.inherent,
             base: skill.base
         }
-        const generatedSkill = await SkillModel.create(skillObject); // attempts to directly use a literal object created here, namey "as Skill", fail to enjoy the excess properties check! 
+        const generatedSkill = await SkillModel.create(skillObject);
         return NextResponse.json({message: "succeeded", skill: generatedSkill} as SkillCreationResponse);
     } catch (err) {
         console.error(err);

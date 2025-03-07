@@ -3,7 +3,6 @@ import { RaceModel } from "@/app/db/models";
 import { RaceWithoutId } from "@/app/db/type";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function POST(request: NextRequest) {
     try {
         const race: RaceWithoutId = await request.json();
@@ -19,5 +18,3 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({message: "failed to create the race"}, {status: 500});
     }
 }
-
-// TODO implement get

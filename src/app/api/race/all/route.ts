@@ -14,7 +14,7 @@ export async function GET() {
         const allRaces = await RaceModel.find(); 
         return NextResponse.json({
             message:"success", 
-            races: allRaces.map(race => {return {name: race.name, _id:race._id};}) // removing _v
+            races: allRaces.map(race => {return {name: race.name, _id: race._id};}) // removing _v
         } as AllRacesResponse);
     } catch (err) {
         console.error(err);

@@ -1,8 +1,7 @@
-import connectDB, { extractIdFromURL } from "@/app/db/connect";
+import connectDB, { extractIdFromURL, IdParameteContext } from "@/app/db/connect";
 import { HoFUmaModel, ParameterModel, PropertyModel, UmaParameterKey, UmaPropertyKey, WhiteFactorModel } from "@/app/db/models";
 import { HoFUma, ParameterWithoutId, PropertyWithoutId, WhiteFactor, WhiteFactorWithoutUma } from "@/app/db/type";
 import { DeleteResult, Types } from "mongoose";
-import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-module";
 import { NextRequest, NextResponse } from "next/server";
 
 interface HoFResponse {
@@ -45,7 +44,7 @@ interface Orphans {
     hofUma?: HoFUma
 }
 
-export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
+export async function GET(ignored: unknown, context: IdParameteContext) {
     try {
         const idOrErrorMessage = await extractIdFromURL(context);
         if (!(typeof idOrErrorMessage === "string")) {
@@ -55,7 +54,7 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
 
         const wrappedUma: WrappedUma | null = await HoFUmaModel.findById(idOrErrorMessage);
         if (!wrappedUma) {
-            return NextResponse.json({message: "the uma was not found"}, {status:404});
+            return NextResponse.json({message: "the uma was not found"}, {status: 404});
         }
         const hofUma = wrappedUma._doc;
 
@@ -67,7 +66,7 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
 
         if (!parameter || !property) {
             return NextResponse.json(
-                {message: "the uma was found, but her parameter and/or property was not found", uma:hofUma},
+                {message: "the uma was found, but her parameter and/or property was not found", uma: hofUma},
                 {status: 500}
             );
         }
@@ -78,7 +77,7 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
             }
         );
 
-        // remove values which are not used in the client
+        // remove values which are not used in the client side
         const pureParameter =  {
             ...parameter,
             _id: undefined,
@@ -90,7 +89,7 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
             __v: undefined,
         }; 
         const pureWhiteFactors: WhiteFactorWithoutUma[] = whiteFactors.map(factor => {
-                return {star: factor.star, skill: factor.skill, scenario: factor.scenario, race: factor.race};
+            return {star: factor.star, skill: factor.skill, scenario: factor.scenario, race: factor.race};
         });
 
         const uma: HoFResponse = {
@@ -106,17 +105,16 @@ export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
         return NextResponse.json(uma);
     } catch (err) {
         console.error(err);
-        return NextResponse.json({message: "failure"}, {status:500});
+        return NextResponse.json({message: "failure"}, {status: 500});
     }
 }
 
-// TODO not tested yet
 const stringifyForLog = (result: DeleteResult, name: string) => {
     return `${name} deletion: ${result.acknowledged}, ${result.deletedCount}`;
 }; 
 
-export async function DELETE(request: NextRequest, context: RouteModuleHandleContext) {
-    let orphans: Orphans = {}; // to log data which have been failed to be deleted
+export async function DELETE(request: NextRequest, context: IdParameteContext) {
+    let orphans: Orphans = {}; // to log data which have been failed to be deleted in the DB
     try {
         const idOrErrorMessage = await extractIdFromURL(context);
         if (!(typeof idOrErrorMessage === "string")) {
@@ -126,7 +124,7 @@ export async function DELETE(request: NextRequest, context: RouteModuleHandleCon
 
         const wrappedUma: WrappedUma | null = await HoFUmaModel.findById(idOrErrorMessage);
         if (!wrappedUma) {
-            return NextResponse.json({message: "the uma was not found"}, {status:404});
+            return NextResponse.json({message: "the uma was not found"}, {status: 404});
         }
         const hofUma = wrappedUma._doc;
 
@@ -137,6 +135,7 @@ export async function DELETE(request: NextRequest, context: RouteModuleHandleCon
         const property: PropertyWithoutId = wrappedProperty?._doc;
         const whiteFactors: WhiteFactor[] = await WhiteFactorModel.find({HoFUma: hofUma._id});
 
+        // initially the data all exist in this orphan object, and gets removed one by one if it gets normally deleted in the DB
         orphans = {
                 factors: whiteFactors,
                 property: property,
@@ -201,7 +200,7 @@ export async function DELETE(request: NextRequest, context: RouteModuleHandleCon
         });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({message: "failure", orphans: orphans}, {status:500});
+        return NextResponse.json({message: "failure", orphans: orphans}, {status: 500});
     }
 }
 

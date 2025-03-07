@@ -1,6 +1,5 @@
-import connectDB, { extractIdFromURL } from "@/app/db/connect";
+import connectDB, { extractIdFromURL, IdParameteContext } from "@/app/db/connect";
 import { HistoricUmaModel, PropertyModel } from "@/app/db/models";
-import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-module";
 import { NextResponse } from "next/server";
 import { HistoricUma } from "@/app/db/type";
 
@@ -22,7 +21,7 @@ function isNOTStranger(uma: HistoricUma | Stranger): uma is HistoricUma {
     return Object.hasOwn(uma, "_id");
 }
 
-export async function GET(ignored: unknown, context: RouteModuleHandleContext){
+export async function GET(ignored: unknown, context: IdParameteContext){
     try {
         const idOrErrorMessage = await extractIdFromURL(context);
         if (!(typeof idOrErrorMessage === "string")) {

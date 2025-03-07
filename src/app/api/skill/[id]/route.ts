@@ -1,9 +1,8 @@
-import connectDB, { extractIdFromURL } from "@/app/db/connect";
+import connectDB, { extractIdFromURL, IdParameteContext } from "@/app/db/connect";
 import { SkillModel } from "@/app/db/models";
-import { RouteModuleHandleContext } from "next/dist/server/route-modules/route-module";
 import { NextResponse } from "next/server";
 
-export async function GET(ignored: unknown, context: RouteModuleHandleContext) {
+export async function GET(ignored: unknown, context: IdParameteContext) {
     try {
         const idOrErrorMessage = await extractIdFromURL(context);
         if (!(typeof idOrErrorMessage === "string")) {

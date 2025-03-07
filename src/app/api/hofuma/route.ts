@@ -68,11 +68,11 @@ export async function POST(request: NextRequest) {
         console.log(`hof created (not yet white factors): ${hoFUmaCreated._id}`);
         orphanHof = hoFUmaCreated._id;
 
-        const factors: WhiteFactor[]  = await WhiteFactorModel.create(
+        const factors: WhiteFactor[] = await WhiteFactorModel.create(
             uma.white_factors.map(factor => {return {...factor, HoFUma: hoFUmaCreated._id}})
         );
         if (!factors) {
-            console.error("failed to attach the white factors to the uma")
+            console.error("failed to attach the white factors to the uma");
             console.warn(uma);
             return NextResponse.json({
                     message: "hof uma was created, but white factors failed to be given to her",

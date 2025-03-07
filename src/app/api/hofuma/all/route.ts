@@ -31,7 +31,7 @@ export async function GET() {
         const allHofUmas: WrappedHoFUmaSummary[] = await HoFUmaModel.find().select(
                 [
                     "_id",
-                    "historic", // TODO remove
+                    "historic",
                     "created",
                     "redStar",
                     "redKind",
